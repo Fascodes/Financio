@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/public/styles/members.css">
+    <script src="/public/scripts/main.js" defer></script>
+    <title>MEMBERS</title>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="left-item">
+            <button class="burger-btn" onclick="toggleMenu()">☰</button>
+            <select>
+                <option>Placeholder</option>
+            </select>
+        </div>
+        <div class="right-item">
+            <button class="user-btn" onclick="toggleUserMenu()">U</button>
+            <div class="user-menu" id="userMenu">
+                <p>Username</p>
+                <p>email@example.com</p>
+                <button>Settings</button>
+                <button>Logout</button>
+            </div>
+        </div>
+    </div>
+    <nav class="nav-menu" id="navMenu">
+        <ul>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/transactions">Transactions</a></li>
+            <li><a href="/reports">Reports</a></li>
+            <li><a href="/members" class="active">Members</a></li>
+        </ul>
+    </nav>
+    <h1>MEMBERS</h1>
+</body>
+</html>

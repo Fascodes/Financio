@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/public/styles/dashboard.css">
+    <script src="/public/scripts/main.js" defer></script>
+    <title>DASHBOARD</title>
+</head>
+<body>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="left-item">
+                <button class="burger-btn" onclick="toggleMenu()">☰</button>
+                <select>
+                    <option>Placeholder</option>
+                </select>
+            </div>
+            <div class="right-item">
+                <button class="user-btn" onclick="toggleUserMenu()">U</button>
+                <div class="user-menu" id="userMenu">
+                    <p class="username">Username</p>
+                    <p class="email">email@example.com</p>
+                    <button class="settings">Settings</button>
+                    <button class="logout">Logout</button>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-text">
+            <h1>DASHBOARD</h1>
+        </div>
+        <div class="top-widgets">
+            
+            <div class="widget" data-id="1">
+                <div class="widget-header">
+                    <span class="widget-title">Saldo konta</span>
+                    <span class="widget-icon">💰</span>
+                </div>
+
+                <div class="widget-amount" id="amount-1">
+                    0.00 PLN
+                </div>
+
+                <div class="widget-footer" id="footer-1">
+                    Ładowanie danych...
+                </div>
+            </div>
+
+            <div class="widget" data-id="2">
+                <div class="widget-header">
+                    <span class="widget-title">Przychody</span>
+                    <span class="widget-icon">📈</span>
+                </div>
+
+                <div class="widget-amount" id="amount-2">
+                    0.00 PLN
+                </div>
+
+                <div class="widget-footer" id="footer-2">
+                    Ładowanie danych...
+                </div>
+            </div>
+
+            <div class="widget" data-id="3">
+                <div class="widget-header">
+                    <span class="widget-title">Wydatki</span>
+                    <span class="widget-icon">📉</span>
+                </div>
+
+                <div class="widget-amount" id="amount-3">
+                    0.00 PLN
+                </div>
+
+                <div class="widget-footer" id="footer-3">
+                    Ładowanie danych...
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <nav class="nav-menu" id="navMenu">
+        <ul>
+            <li><a href="/dashboard" class="active">Dashboard</a></li>
+            <li><a href="/transactions">Transactions</a></li>
+            <li><a href="/reports">Reports</a></li>
+            <li><a href="/members">Members</a></li>
+        </ul>
+    </nav>
+</body>
