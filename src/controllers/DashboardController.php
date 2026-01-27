@@ -1,32 +1,30 @@
 <?php
 
 require_once 'src/controllers/AppController.php';
-require_once 'src/utility/DatabaseUtility.php';
+require_once 'src/repositories/DashboardRepository.php';
 
 class DashboardController extends AppController {
-    private $pdo;
+    private $dashboardRepository;
 
     public function __construct() {
-        $this->pdo = DatabaseUtility::getConnection();
+        $this->dashboardRepository = new DashboardRepository();
     }
 
     public function dashboard() {
-        // Przykład zapytania dla danych wykresu (np. transakcje miesięczne)
-        $stmt = $this->pdo->prepare("SELECT month, SUM(amount) as total FROM transactions GROUP BY month ORDER BY month");
-        $stmt->execute();
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Przekaż dane do widoku (np. jako JSON dla JavaScript wykresu)
-        $chartData = json_encode($data);
-
-        // Buforuj wyjście HTML
-        ob_start();
         include 'public/views/dashboard.html';
-        $html = ob_get_clean();
+    }
 
-        // Wstaw dane JS do HTML (przed </body>)
-        $html = str_replace('</body>', '<script>var chartData = ' . $chartData . ';</script></body>', $html);
+    public function getChartData() {
+        $data = $this->dashboardRepository->getMonthlyTrendData();
 
-        echo $html;
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
+    public function getCategoryData() {
+        $data = $this->dashboardRepository->getCategorySpendingData();
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 }
