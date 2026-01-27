@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/public/styles/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/public/scripts/main.js" defer></script>
+    <script src="/public/scripts/dashboard.js" defer></script>
     <title>DASHBOARD</title>
 </head>
 <body>
@@ -77,6 +79,34 @@
                 </div>
             </div>
 
+        </div>
+        <div class="graph-widgets">
+            <canvas class="trends-graph" id="trendsGraph" width="400" height="200">
+
+            </canvas>
+
+            <canvas class="category-graph" id="categoryGraph" width="400" height="200">
+
+            </canvas>
+
+        </div>
+        <div class="bottom-widgets">
+            <div class="recent-transactions">
+                <div class="widget-list-header">
+                    <h3>Ostatnie transakcje</h3>
+                </div>
+                <ul class="transaction-list" id="transactionList">
+                    <li class="loading">Ładowanie danych...</li>
+                </ul>
+            </div>
+            <div class="group-members">
+                <div class="widget-list-header">
+                    <h3>Członkowie grupy</h3>
+                </div>
+                <ul class="members-list" id="membersList">
+                    <li class="loading">Ładowanie danych...</li>
+                </ul>
+            </div>
         </div>
     </div>
 
