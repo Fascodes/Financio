@@ -27,4 +27,18 @@ class DashboardController extends AppController {
         header('Content-Type: application/json');
         echo json_encode($data);
     }
+
+    public function getRecentTransactions() {
+        $data = $this->dashboardRepository->getRecentTransactions();
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
+    public function getGroupMembers() {
+        $data = $this->dashboardRepository->getGroupMembers();
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
 }

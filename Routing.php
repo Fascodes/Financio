@@ -21,6 +21,14 @@ class Routing{
             'controller' => "DashboardController",
             'action' => 'getCategoryData'
         ],
+        'api/recent-transactions' => [
+            'controller' => "DashboardController",
+            'action' => 'getRecentTransactions'
+        ],
+        'api/group-members' => [
+            'controller' => "DashboardController",
+            'action' => 'getGroupMembers'
+        ],
         'transactions' => [
             'controller' => "TransactionsController",
             'action' => 'transactions'
