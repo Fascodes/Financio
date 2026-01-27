@@ -1,20 +1,179 @@
--- Tworzenie tabeli transactions
-CREATE TABLE transactions (
+-- Tabela użytkowników
+CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    amount NUMERIC(10, 2) NOT NULL,
-    month VARCHAR(7) NOT NULL,  -- Format: YYYY-MM
-    category VARCHAR(50) NOT NULL,  -- Kategoria wydatku
-    description VARCHAR(255),
-    date DATE NOT NULL
+    email VARCHAR(100) UNIQUE NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
 );
 
--- Wstawianie przykładowych danych
-INSERT INTO transactions (amount, month, category, description, date) VALUES
-(100.50, '2023-01', 'Spożywcze', 'Zakupy spożywcze', '2023-01-15'),
-(250.00, '2023-01', 'Transport', 'Paliwo', '2023-01-20'),
-(75.25, '2023-02', 'Gastronomia', 'Restauracja', '2023-02-10'),
-(300.00, '2023-02', 'Elektronika', 'Elektronika', '2023-02-25'),
-(150.75, '2023-03', 'Odzież', 'Ubrania', '2023-03-05'),
-(200.00, '2023-03', 'Transport', 'Transport', '2023-03-18'),
-(120.00, '2023-01', 'Rozrywka', 'Kino', '2023-01-10'),
-(450.00, '2023-02', 'Spożywcze', 'Zakupy wielkie', '2023-02-05');
+-- Tabela grup budżetowych
+CREATE TABLE groups (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- Tabela kategorii (predefiniowane)
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela członków grupy (relacja n-n z rolami)
+CREATE TABLE group_members (
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role VARCHAR(20) NOT NULL CHECK (role IN ('owner', 'editor')), -- RBAC
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(group_id, user_id)  -- Jeden użytkownik max raz w grupie
+);
+
+-- Tabela transakcji (główna)
+CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE SET NULL,
+    category_id INTEGER NOT NULL REFERENCES categories(id),
+    name VARCHAR(255) NOT NULL,
+    amount NUMERIC(10, 2) NOT NULL CHECK (amount > 0),
+    date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_archived BOOLEAN DEFAULT FALSE,  -- Dla archiwizacji
+    archive_date TIMESTAMP NULL
+);
+
+-- Indeksy dla wydajności
+CREATE INDEX idx_transactions_group_date ON transactions(group_id, date DESC) WHERE is_archived = FALSE;
+CREATE INDEX idx_transactions_user ON transactions(user_id);
+CREATE INDEX idx_group_members_user ON group_members(user_id);
+CREATE INDEX idx_group_members_group ON group_members(group_id);
+
+
+-- Widok 1: Ostatnie transakcje grupy z pełnymi danymi
+CREATE VIEW recent_group_transactions AS
+SELECT 
+    t.id,
+    t.name,
+    t.amount,
+    t.date,
+    u.username,
+    c.name as category,
+    g.id as group_id,
+    g.name as group_name
+FROM transactions t
+JOIN users u ON t.user_id = u.id
+JOIN categories c ON t.category_id = c.id
+JOIN groups g ON t.group_id = g.id
+WHERE t.is_archived = FALSE
+ORDER BY t.date DESC;
+
+-- Widok 2: Podsumowanie grupy z saldem członków
+CREATE VIEW group_member_summary AS
+SELECT 
+    gm.group_id,
+    g.name as group_name,
+    u.id as user_id,
+    u.username,
+    COUNT(t.id) as transaction_count,
+    SUM(CASE WHEN t.user_id = u.id THEN t.amount ELSE 0 END) as total_spent,
+    AVG(CASE WHEN t.user_id IS NOT NULL THEN t.amount ELSE 0 END) as avg_transaction,
+    gm.role
+FROM group_members gm
+JOIN groups g ON gm.group_id = g.id
+JOIN users u ON gm.user_id = u.id
+LEFT JOIN transactions t ON g.id = t.group_id AND t.is_archived = FALSE
+GROUP BY gm.group_id, g.name, u.id, u.username, gm.role;
+
+
+
+-- Funkcja: Obliczenie salda użytkownika w grupie
+CREATE OR REPLACE FUNCTION calculate_user_balance_in_group(
+    p_user_id INTEGER,
+    p_group_id INTEGER
+) RETURNS NUMERIC AS $$
+DECLARE
+    v_member_count INTEGER;
+    v_total_spent NUMERIC;
+    v_split_amount NUMERIC;
+    v_user_spent NUMERIC;
+    v_balance NUMERIC;
+BEGIN
+    -- Liczba członków grupy
+    SELECT COUNT(*) INTO v_member_count
+    FROM group_members
+    WHERE group_id = p_group_id AND user_id != p_user_id;
+    
+    -- Łączna suma wydatków w grupie
+    SELECT COALESCE(SUM(amount), 0) INTO v_total_spent
+    FROM transactions
+    WHERE group_id = p_group_id AND is_archived = FALSE;
+    
+    -- Średnia na osobę (dla każdego członka)
+    v_split_amount := v_total_spent / NULLIF(v_member_count + 1, 0);
+    
+    -- Ile wydał dany użytkownik
+    SELECT COALESCE(SUM(amount), 0) INTO v_user_spent
+    FROM transactions
+    WHERE group_id = p_group_id AND user_id = p_user_id AND is_archived = FALSE;
+    
+    -- Saldo: ile wydał - ile powinien wydać (dodatnie = wpłacił więcej)
+    v_balance := v_user_spent - v_split_amount;
+    
+    RETURN v_balance;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- Trigger: Archiwizowanie transakcji starszych niż 6 miesięcy
+CREATE OR REPLACE FUNCTION archive_old_transactions()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE transactions
+    SET is_archived = TRUE, archive_date = CURRENT_TIMESTAMP
+    WHERE date < CURRENT_DATE - INTERVAL '6 months'
+      AND is_archived = FALSE;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_archive_transactions
+AFTER INSERT ON transactions
+FOR EACH ROW
+EXECUTE FUNCTION archive_old_transactions();
+
+-- Trigger: Walidacja - transakcja musi mieć kategorię z tabeli categories
+CREATE OR REPLACE FUNCTION validate_category_exists()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM categories WHERE id = NEW.category_id) THEN
+        RAISE EXCEPTION 'Kategoria o ID % nie istnieje', NEW.category_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_validate_category
+BEFORE INSERT OR UPDATE ON transactions
+FOR EACH ROW
+EXECUTE FUNCTION validate_category_exists();
+
+
+INSERT INTO categories (name, description) VALUES
+('Spożywcze', 'Zakupy spożywcze i artykuły'),
+('Transport', 'Paliwo, komunikacja, przejazdy'),
+('Gastronomia', 'Restauracje, kawiarnie, bary'),
+('Elektronika', 'Sprzęt elektroniczny i akcesoria'),
+('Odzież', 'Ubrania, obuwie, akcesoria'),
+('Rozrywka', 'Kino, teatr, gry, książki'),
+('Zdrowie', 'Leki, wizyty lekarskie, fitness');
