@@ -4,4 +4,6 @@ ENV POSTGRES_PASSWORD ${POSTGRES_PASSWORD}
 ENV POSTGRES_DB ${POSTGRES_DB}
 ENV POSTGRES_USER ${POSTGRES_USER}
 
-COPY . /app/database
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# COPY . /app/database

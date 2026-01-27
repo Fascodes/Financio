@@ -151,6 +151,20 @@ body {
     gap: 20px;
 }
 
+.graph-widgets {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;  /* Dostosuj odstęp */
+}
+
+.trends-graph {
+    max-width: 250px;
+    width: 100%;
+    height: 150px;  /* Zmniejsz wysokość dla lepszej skali */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
 .widget {
     display: flex;
     width: 250px;
