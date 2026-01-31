@@ -27,7 +27,8 @@ class DashboardController extends AppController {
             exit();
         }
 
-        $data = $this->dashboardRepository->getMonthlyTrendData();
+        $userId = $_SESSION['user_id'];
+        $data = $this->dashboardRepository->getMonthlyTrendData($userId);
 
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -41,7 +42,8 @@ class DashboardController extends AppController {
             exit();
         }
 
-        $data = $this->dashboardRepository->getCategorySpendingData();
+        $userId = $_SESSION['user_id'];
+        $data = $this->dashboardRepository->getCategorySpendingData($userId);
 
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -55,7 +57,8 @@ class DashboardController extends AppController {
             exit();
         }
 
-        $data = $this->dashboardRepository->getRecentTransactions();
+        $userId = $_SESSION['user_id'];
+        $data = $this->dashboardRepository->getRecentTransactions($userId);
 
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -69,7 +72,8 @@ class DashboardController extends AppController {
             exit();
         }
 
-        $data = $this->dashboardRepository->getGroupMembers();
+        $userId = $_SESSION['user_id'];
+        $data = $this->dashboardRepository->getGroupMembers($userId);
 
         header('Content-Type: application/json');
         echo json_encode($data);

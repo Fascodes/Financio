@@ -13,7 +13,7 @@
             
             <div id="loginForm">
                 <h2>Logowanie</h2>
-                <form id="loginFormElement">
+                <form id="loginFormElement" onsubmit="handleLoginSubmit(event)">
                     <div class="form-group">
                         <label for="email">Email:</label>
                         <input type="email" id="email" name="email" required>
@@ -29,7 +29,7 @@
 
             <div id="registerForm" style="display: none;">
                 <h2>Rejestracja</h2>
-                <form id="registerFormElement">
+                <form id="registerFormElement" onsubmit="handleRegisterSubmit(event)">
                     <div class="form-group">
                         <label for="regEmail">Email:</label>
                         <input type="email" id="regEmail" name="email" required>
@@ -71,7 +71,7 @@
         }
 
         // Logowanie
-        document.getElementById('loginFormElement').addEventListener('submit', async function(e) {
+        async function handleLoginSubmit(e) {
             e.preventDefault();
             
             const email = document.getElementById('email').value;
@@ -99,10 +99,10 @@
             } catch (error) {
                 showMessage('Błąd przy logowaniu: ' + error.message, 'error');
             }
-        });
+        }
 
         // Rejestracja
-        document.getElementById('registerFormElement').addEventListener('submit', async function(e) {
+        async function handleRegisterSubmit(e) {
             e.preventDefault();
             
             const email = document.getElementById('regEmail').value;
@@ -131,7 +131,7 @@
             } catch (error) {
                 showMessage('Błąd przy rejestracji: ' + error.message, 'error');
             }
-        });
+        }
     </script>
 </body>
 </html>

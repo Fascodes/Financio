@@ -177,3 +177,33 @@ INSERT INTO categories (name, description) VALUES
 ('Odzież', 'Ubrania, obuwie, akcesoria'),
 ('Rozrywka', 'Kino, teatr, gry, książki'),
 ('Zdrowie', 'Leki, wizyty lekarskie, fitness');
+
+-- Test User (password: admin123 - zahaszowane bcrypt)
+INSERT INTO users (email, username, password_hash, is_active) VALUES
+('admin@example.com', 'admin', '$2y$12$zWi9og5B3qezqQi3fDz6YeGPqIBMlyKYzSLyk65aoWkUGi4GVT28u', true);
+
+-- Test Group
+INSERT INTO groups (name, owner_id, description, is_active) VALUES
+('Budżet Domowy', 1, 'Wspólny budżet rodzinny', true);
+
+-- Add user as member of group
+INSERT INTO group_members (group_id, user_id, role) VALUES
+(1, 1, 'owner');
+
+-- Sample Transactions
+INSERT INTO transactions (group_id, user_id, category_id, name, amount, date) VALUES
+(1, 1, 1, 'Zakupy Tesco', 150.50, '2026-01-28'),
+(1, 1, 2, 'Benzyna 50L', 250.00, '2026-01-27'),
+(1, 1, 3, 'Obiad w restauracji', 120.00, '2026-01-26'),
+(1, 1, 1, 'Warzywa świeże', 45.75, '2026-01-26'),
+(1, 1, 4, 'Laptop część - RAM', 299.99, '2026-01-25'),
+(1, 1, 3, 'Kawa w kawiarni', 18.50, '2026-01-25'),
+(1, 1, 6, 'Bilet do kina', 35.00, '2026-01-24'),
+(1, 1, 5, 'Koszulka adidas', 89.99, '2026-01-23'),
+(1, 1, 1, 'Mleko, chleb, masło', 32.40, '2026-01-23'),
+(1, 1, 2, 'Karta parkingowa', 80.00, '2026-01-22'),
+(1, 1, 7, 'Leki na przeziębienie', 25.00, '2026-01-22'),
+(1, 1, 3, 'Pizza - zamówienie', 45.99, '2026-01-21'),
+(1, 1, 4, 'Kabel HDMI', 29.50, '2026-01-21'),
+(1, 1, 6, 'Książka - Ścieżka Wojny', 55.00, '2026-01-20'),
+(1, 1, 1, 'Owoce - banany, jabłka', 28.70, '2026-01-20');

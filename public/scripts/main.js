@@ -7,10 +7,10 @@ function toggleUserMenu() {
 }
 
 // Załaduj dane zalogowanego użytkownika na starcie
-document.addEventListener('DOMContentLoaded', async function() {
-    await loadCurrentUser();
+function initializeDashboard() {
+    loadCurrentUser();
     setupLogoutButton();
-});
+}
 
 // Załaduj dane aktualnego użytkownika
 async function loadCurrentUser() {
@@ -46,7 +46,7 @@ async function loadCurrentUser() {
 function setupLogoutButton() {
     const logoutBtn = document.querySelector('.logout');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', async function(e) {
+        logoutBtn.onclick = async function(e) {
             e.preventDefault();
             
             try {
@@ -69,6 +69,6 @@ function setupLogoutButton() {
                 console.error('Błąd podczas wylogowania:', error);
                 alert('Błąd podczas wylogowania');
             }
-        });
+        };
     }
 }

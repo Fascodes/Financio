@@ -186,9 +186,11 @@ function renderPieChart(categoryData) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+// Funkcja do inicjalizacji wszystkich danych na starcie
+function initializeCharts() {
     loadChartData();
     loadCategoryData();
     loadRecentTransactions();
     loadGroupMembers();
-});
+}
+
