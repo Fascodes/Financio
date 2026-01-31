@@ -206,4 +206,112 @@ class TransactionsRepository {
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
+
+    /**
+     * Pobierz pojedynczą transakcję
+     * @param int $transactionId
+     * @param int $userId - do weryfikacji dostępu
+     * @return array|null
+     */
+    public function getTransaction($transactionId, $userId) {
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT t.id, t.name, t.amount, t.date, t.category_id, t.user_id, t.group_id,
+                        c.name as category, u.username as user_name
+                 FROM transactions t
+                 JOIN categories c ON t.category_id = c.id
+                 LEFT JOIN users u ON t.user_id = u.id
+                 JOIN group_members gm ON t.group_id = gm.group_id
+                 WHERE t.id = ? AND gm.user_id = ?"
+            );
+            $stmt->execute([$transactionId, $userId]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($row) {
+                $row['amount'] = (float)$row['amount'];
+            }
+            return $row ?: null;
+        } catch (PDOException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Aktualizuj transakcję
+     * @param int $transactionId
+     * @param int $userId - do weryfikacji dostępu
+     * @param array $data - ['name', 'amount', 'category_id', 'date']
+     * @return array ['success' => bool, 'error' => string|null]
+     */
+    public function updateTransaction($transactionId, $userId, $data) {
+        try {
+            // Sprawdź czy użytkownik ma dostęp do tej transakcji
+            $existing = $this->getTransaction($transactionId, $userId);
+            if (!$existing) {
+                return ['success' => false, 'error' => 'Transaction not found or access denied'];
+            }
+
+            // Walidacja wymaganych pól
+            if (empty($data['name']) || !isset($data['amount']) || empty($data['category_id']) || empty($data['date'])) {
+                return ['success' => false, 'error' => 'Missing required fields'];
+            }
+
+            // Walidacja amount
+            $amount = (float)$data['amount'];
+            if ($amount <= 0) {
+                return ['success' => false, 'error' => 'Amount must be greater than 0'];
+            }
+
+            // Walidacja kategorii
+            $stmt = $this->pdo->prepare("SELECT id FROM categories WHERE id = ?");
+            $stmt->execute([(int)$data['category_id']]);
+            if (!$stmt->fetch()) {
+                return ['success' => false, 'error' => 'Invalid category'];
+            }
+
+            // Aktualizuj transakcję
+            $stmt = $this->pdo->prepare(
+                "UPDATE transactions 
+                 SET name = ?, amount = ?, category_id = ?, date = ?, updated_at = NOW()
+                 WHERE id = ?"
+            );
+            $stmt->execute([
+                trim($data['name']),
+                $amount,
+                (int)$data['category_id'],
+                $data['date'],
+                $transactionId
+            ]);
+
+            return ['success' => true];
+
+        } catch (PDOException $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Usuń transakcję
+     * @param int $transactionId
+     * @param int $userId - do weryfikacji dostępu
+     * @return array ['success' => bool, 'error' => string|null]
+     */
+    public function deleteTransaction($transactionId, $userId) {
+        try {
+            // Sprawdź czy użytkownik ma dostęp do tej transakcji
+            $existing = $this->getTransaction($transactionId, $userId);
+            if (!$existing) {
+                return ['success' => false, 'error' => 'Transaction not found or access denied'];
+            }
+
+            // Usuń transakcję
+            $stmt = $this->pdo->prepare("DELETE FROM transactions WHERE id = ?");
+            $stmt->execute([$transactionId]);
+
+            return ['success' => true];
+
+        } catch (PDOException $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
 }
