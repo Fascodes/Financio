@@ -190,6 +190,18 @@ body {
     font-weight: bold;
 }
 
+.widget-amount.positive {
+    color: #28a745;
+}
+
+.widget-amount.negative {
+    color: #dc3545;
+}
+
+.widget-amount.spending {
+    color: #333;
+}
+
 .widget-footer {
     margin-top: 6px;
     font-size: 12px;

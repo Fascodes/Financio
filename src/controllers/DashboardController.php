@@ -78,4 +78,19 @@ class DashboardController extends AppController {
         header('Content-Type: application/json');
         echo json_encode($data);
     }
+
+    public function getBudgetSummary() {
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            http_response_code(401);
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Unauthorized']);
+            exit();
+        }
+
+        $userId = $_SESSION['user_id'];
+        $data = $this->dashboardRepository->getBudgetSummary($userId);
+
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
 }

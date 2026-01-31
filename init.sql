@@ -15,6 +15,7 @@ CREATE TABLE groups (
     name VARCHAR(100) NOT NULL,
     owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     description TEXT,
+    budget NUMERIC(12, 2) DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE
@@ -183,8 +184,8 @@ INSERT INTO users (email, username, password_hash, is_active) VALUES
 ('admin@example.com', 'admin', '$2y$12$zWi9og5B3qezqQi3fDz6YeGPqIBMlyKYzSLyk65aoWkUGi4GVT28u', true);
 
 -- Test Group
-INSERT INTO groups (name, owner_id, description, is_active) VALUES
-('Budżet Domowy', 1, 'Wspólny budżet rodzinny', true);
+INSERT INTO groups (name, owner_id, description, budget, is_active) VALUES
+('Budżet Domowy', 1, 'Wspólny budżet rodzinny', 5000.00, true);
 
 -- Add user as member of group
 INSERT INTO group_members (group_id, user_id, role) VALUES
