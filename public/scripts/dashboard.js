@@ -1,3 +1,50 @@
+// Funkcja do ładowania podsumowania budżetu via FETCH API
+async function loadBudgetSummary() {
+    try {
+        const response = await fetch('/api/budget-summary');
+        if (!response.ok) {
+            throw new Error('Błąd sieci: ' + response.status);
+        }
+        const data = await response.json();
+        renderBudgetSummary(data);
+    } catch (error) {
+        console.error('Błąd przy ładowaniu podsumowania budżetu:', error);
+    }
+}
+
+// Funkcja do renderowania podsumowania budżetu
+function renderBudgetSummary(data) {
+    // Budżet
+    const budgetAmount = document.getElementById('budget-amount');
+    if (budgetAmount) {
+        budgetAmount.textContent = data.budget.toFixed(2) + ' PLN';
+    }
+
+    // Wydatki
+    const spendingAmount = document.getElementById('spending-amount');
+    const spendingFooter = document.getElementById('spending-footer');
+    if (spendingAmount) {
+        spendingAmount.textContent = data.spending.toFixed(2) + ' PLN';
+    }
+    if (spendingFooter) {
+        spendingFooter.textContent = data.percentage + '% budżetu';
+    }
+
+    // Balans
+    const balanceAmount = document.getElementById('balance-amount');
+    if (balanceAmount) {
+        balanceAmount.textContent = data.balance.toFixed(2) + ' PLN';
+        // Dodaj klasę dla koloru (zielony jeśli dodatni, czerwony jeśli ujemny)
+        if (data.balance >= 0) {
+            balanceAmount.classList.add('positive');
+            balanceAmount.classList.remove('negative');
+        } else {
+            balanceAmount.classList.add('negative');
+            balanceAmount.classList.remove('positive');
+        }
+    }
+}
+
 // Funkcja do ładowania ostatnich transakcji via FETCH API
 async function loadRecentTransactions() {
     try {
@@ -188,6 +235,7 @@ function renderPieChart(categoryData) {
 
 // Funkcja do inicjalizacji wszystkich danych na starcie
 function initializeCharts() {
+    loadBudgetSummary();
     loadChartData();
     loadCategoryData();
     loadRecentTransactions();

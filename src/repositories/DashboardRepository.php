@@ -131,4 +131,71 @@ class DashboardRepository {
             return [];
         }
     }
+
+    /**
+     * Pobierz dane podsumowania budżetu grupy (Budżet, Wydatki, Balans)
+     */
+    public function getBudgetSummary($userId, $groupId = null) {
+        try {
+            // Jeśli groupId nie podany, użyj pierwszej grupy użytkownika
+            if (!$groupId) {
+                $stmt = $this->pdo->prepare(
+                    "SELECT g.id FROM groups g
+                     JOIN group_members gm ON g.id = gm.group_id
+                     WHERE gm.user_id = ?
+                     LIMIT 1"
+                );
+                $stmt->execute([$userId]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $groupId = $result['id'] ?? null;
+                
+                if (!$groupId) {
+                    return [
+                        'budget' => 0.0,
+                        'spending' => 0.0,
+                        'balance' => 0.0,
+                        'percentage' => 0.0
+                    ];
+                }
+            }
+
+            // Pobierz budżet grupy
+            $stmt = $this->pdo->prepare(
+                "SELECT COALESCE(budget, 0) as budget FROM groups WHERE id = ?"
+            );
+            $stmt->execute([$groupId]);
+            $budgetResult = $stmt->fetch(PDO::FETCH_ASSOC);
+            $budget = (float)($budgetResult['budget'] ?? 0);
+
+            // Pobierz sumę wydatków w grupie (bieżący miesiąc)
+            $stmt = $this->pdo->prepare(
+                "SELECT COALESCE(SUM(amount), 0) as spending 
+                 FROM transactions 
+                 WHERE group_id = ? 
+                 AND EXTRACT(MONTH FROM date) = EXTRACT(MONTH FROM CURRENT_DATE)
+                 AND EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)"
+            );
+            $stmt->execute([$groupId]);
+            $spendingResult = $stmt->fetch(PDO::FETCH_ASSOC);
+            $spending = (float)($spendingResult['spending'] ?? 0);
+
+            // Oblicz balans i procent
+            $balance = $budget - $spending;
+            $percentage = $budget > 0 ? round(($spending / $budget) * 100, 1) : 0;
+
+            return [
+                'budget' => $budget,
+                'spending' => $spending,
+                'balance' => $balance,
+                'percentage' => $percentage
+            ];
+        } catch(PDOException $e) {
+            return [
+                'budget' => 0.0,
+                'spending' => 0.0,
+                'balance' => 0.0,
+                'percentage' => 0.0
+            ];
+        }
+    }
 }

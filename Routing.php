@@ -50,6 +50,10 @@ class Routing{
             'controller' => "DashboardController",
             'action' => 'getGroupMembers'
         ],
+        'api/budget-summary' => [
+            'controller' => "DashboardController",
+            'action' => 'getBudgetSummary'
+        ],
         'transactions' => [
             'controller' => "TransactionsController",
             'action' => 'transactions'
