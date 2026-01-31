@@ -346,7 +346,61 @@ function closeAddModal() {
  */
 function handleAddTransaction(event) {
     event.preventDefault();
-    // TODO: Implement in Commit 5
-    alert('Add transaction will be implemented in next commit');
-    closeAddModal();
+
+    const form = document.getElementById('addTransactionForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    // Disable button during submission
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Adding...';
+
+    // Gather form data
+    const data = {
+        name: document.getElementById('transactionName').value.trim(),
+        amount: parseFloat(document.getElementById('transactionAmount').value),
+        category_id: parseInt(document.getElementById('transactionCategory').value),
+        date: document.getElementById('transactionDate').value
+    };
+
+    // Validate
+    if (!data.name || !data.amount || !data.category_id || !data.date) {
+        alert('Please fill all required fields');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Transaction';
+        return;
+    }
+
+    // Send request
+    fetch('/api/transactions/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(function(response) {
+        return response.json().then(function(json) {
+            return { ok: response.ok, data: json };
+        });
+    })
+    .then(function(result) {
+        if (result.ok && result.data.success) {
+            closeAddModal();
+            form.reset();
+            setDefaultDate();
+            // Reload transactions to show the new one
+            currentPage = 1;
+            loadTransactions();
+        } else {
+            alert('Error: ' + (result.data.error || 'Failed to add transaction'));
+        }
+    })
+    .catch(function(error) {
+        console.error('Error adding transaction:', error);
+        alert('Failed to add transaction. Please try again.');
+    })
+    .finally(function() {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Add Transaction';
+    });
 }

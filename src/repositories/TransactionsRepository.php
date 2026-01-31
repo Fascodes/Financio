@@ -151,4 +151,59 @@ class TransactionsRepository {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['id'] ?? null;
     }
+
+    /**
+     * Dodaj nową transakcję
+     * @param int $userId - ID użytkownika dodającego
+     * @param array $data - ['name', 'amount', 'category_id', 'date', 'group_id' (opcjonalne)]
+     * @return array ['success' => bool, 'id' => int|null, 'error' => string|null]
+     */
+    public function addTransaction($userId, $data) {
+        try {
+            // Pobierz groupId
+            $groupId = !empty($data['group_id']) ? (int)$data['group_id'] : $this->getUserFirstGroup($userId);
+            if (!$groupId) {
+                return ['success' => false, 'error' => 'No group found'];
+            }
+
+            // Walidacja wymaganych pól
+            if (empty($data['name']) || !isset($data['amount']) || empty($data['category_id']) || empty($data['date'])) {
+                return ['success' => false, 'error' => 'Missing required fields'];
+            }
+
+            // Walidacja amount
+            $amount = (float)$data['amount'];
+            if ($amount <= 0) {
+                return ['success' => false, 'error' => 'Amount must be greater than 0'];
+            }
+
+            // Walidacja kategorii
+            $stmt = $this->pdo->prepare("SELECT id FROM categories WHERE id = ?");
+            $stmt->execute([(int)$data['category_id']]);
+            if (!$stmt->fetch()) {
+                return ['success' => false, 'error' => 'Invalid category'];
+            }
+
+            // Wstaw transakcję
+            $stmt = $this->pdo->prepare(
+                "INSERT INTO transactions (group_id, user_id, category_id, name, amount, date)
+                 VALUES (?, ?, ?, ?, ?, ?)
+                 RETURNING id"
+            );
+            $stmt->execute([
+                $groupId,
+                $userId,
+                (int)$data['category_id'],
+                trim($data['name']),
+                $amount,
+                $data['date']
+            ]);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return ['success' => true, 'id' => (int)$result['id']];
+
+        } catch (PDOException $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
 }

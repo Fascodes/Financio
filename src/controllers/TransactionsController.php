@@ -93,4 +93,44 @@ class TransactionsController extends AppController {
         header('Content-Type: application/json');
         echo json_encode(['users' => $users]);
     }
+
+    /**
+     * API: Dodaj nową transakcję (POST)
+     */
+    public function addTransaction() {
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
+
+        // Sprawdź metodę HTTP
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed']);
+            return;
+        }
+
+        $userId = $_SESSION['user_id'];
+
+        // Pobierz dane z body
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!$input) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid JSON']);
+            return;
+        }
+
+        $result = $this->repository->addTransaction($userId, $input);
+
+        header('Content-Type: application/json');
+
+        if ($result['success']) {
+            http_response_code(201);
+            echo json_encode(['success' => true, 'id' => $result['id']]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => $result['error']]);
+        }
+    }
 }

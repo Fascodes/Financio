@@ -70,6 +70,10 @@ class Routing{
             'controller' => "TransactionsController",
             'action' => 'getGroupUsers'
         ],
+        'api/transactions/add' => [
+            'controller' => "TransactionsController",
+            'action' => 'addTransaction'
+        ],
         'reports' => [
             'controller' => "ReportsController",
             'action' => 'reports'
