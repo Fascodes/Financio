@@ -58,6 +58,22 @@ class Routing{
             'controller' => "TransactionsController",
             'action' => 'transactions'
         ],
+        'api/transactions' => [
+            'controller' => "TransactionsController",
+            'action' => 'getTransactions'
+        ],
+        'api/categories' => [
+            'controller' => "TransactionsController",
+            'action' => 'getCategories'
+        ],
+        'api/group-users' => [
+            'controller' => "TransactionsController",
+            'action' => 'getGroupUsers'
+        ],
+        'api/transactions/add' => [
+            'controller' => "TransactionsController",
+            'action' => 'addTransaction'
+        ],
         'reports' => [
             'controller' => "ReportsController",
             'action' => 'reports'

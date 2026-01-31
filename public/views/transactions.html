@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/public/styles/transactions.css">
     <script src="/public/scripts/main.js" defer></script>
-    <title>TRANSACTIONS</title>
+    <script src="/public/scripts/transactions.js" defer></script>
+    <title>Transactions</title>
 </head>
-<body>
+<body onload="initializeTransactions()">
     <div class="top-bar">
         <div class="left-item">
             <button class="burger-btn" onclick="toggleMenu()">☰</button>
@@ -18,10 +19,10 @@
         <div class="right-item">
             <button class="user-btn" onclick="toggleUserMenu()">U</button>
             <div class="user-menu" id="userMenu">
-                <p>Username</p>
-                <p>email@example.com</p>
-                <button>Settings</button>
-                <button>Logout</button>
+                <p class="username">Username</p>
+                <p class="email">email@example.com</p>
+                <button class="settings">Settings</button>
+                <button class="logout">Logout</button>
             </div>
         </div>
     </div>
@@ -33,6 +34,90 @@
             <li><a href="/members">Members</a></li>
         </ul>
     </nav>
-    <h1>TRANSACTIONS</h1>
+
+    <main class="main-content">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="header-left">
+                <h1>Transactions</h1>
+                <p class="subtitle">Complete transaction history</p>
+            </div>
+            <div class="header-right">
+                <button class="btn-primary" onclick="openAddModal()">
+                    <span class="btn-icon">+</span> Add Transaction
+                </button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-container">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search transactions..." onkeyup="handleSearchInput(event)">
+            </div>
+            <div class="filter-group">
+                <span class="filter-icon">🔻</span>
+                <select id="categoryFilter" onchange="applyFilters()">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <span class="filter-icon">🔻</span>
+                <select id="memberFilter" onchange="applyFilters()">
+                    <option value="">All Members</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Transactions List -->
+        <div class="transactions-container">
+            <div class="transactions-header">
+                <span id="transactionCount">0 Transactions</span>
+            </div>
+            <div class="transactions-list" id="transactionsList">
+                <!-- Transactions will be loaded here -->
+                <div class="loading">Loading transactions...</div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+            <!-- Pagination buttons will be loaded here -->
+        </div>
+    </main>
+
+    <!-- Add Transaction Modal -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Add Transaction</h2>
+                <button class="modal-close" onclick="closeAddModal()">×</button>
+            </div>
+            <form id="addTransactionForm" onsubmit="handleAddTransaction(event)">
+                <div class="form-group">
+                    <label for="transactionName">Name</label>
+                    <input type="text" id="transactionName" name="name" required placeholder="e.g. Grocery shopping">
+                </div>
+                <div class="form-group">
+                    <label for="transactionAmount">Amount</label>
+                    <input type="number" id="transactionAmount" name="amount" step="0.01" min="0.01" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="transactionCategory">Category</label>
+                    <select id="transactionCategory" name="category_id" required>
+                        <option value="">Select category...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transactionDate">Date</label>
+                    <input type="date" id="transactionDate" name="date" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeAddModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
