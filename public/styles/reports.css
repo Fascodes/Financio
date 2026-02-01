@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background: #f5f5f5;
 }
 
 .top-bar {
@@ -131,7 +132,128 @@ body {
     background: #444;
 }
 
-h1 {
-    text-align: center;
-    margin-top: 50px;
+/* Main Content */
+.main-content {
+    margin-top: 70px;
+    padding: 20px 40px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Page Header */
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.subtitle {
+    margin: 4px 0 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Summary Widgets */
+.summary-widgets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.summary-card h3 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+}
+
+.summary-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+}
+
+.summary-value.category-value {
+    font-size: 24px;
+    color: #2ecc71;
+}
+
+.summary-label {
+    font-size: 13px;
+    color: #888;
+}
+
+.summary-label.positive {
+    color: #2ecc71;
+}
+
+.summary-label.negative {
+    color: #e74c3c;
+}
+
+/* Chart Cards */
+.chart-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
+}
+
+.chart-card.full-width {
+    width: 100%;
+}
+
+.chart-card h3 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+.pie-container {
+    height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Charts Row */
+.charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.charts-row .chart-card {
+    margin-bottom: 0;
+}
+
+/* Loading state */
+.chart-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #888;
 }
