@@ -483,3 +483,87 @@ body {
 .btn-secondary:hover {
     background: #e0e0e0;
 }
+
+/* Transaction Actions */
+.transaction-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.transaction-actions {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.transaction-item:hover .transaction-actions {
+    opacity: 1;
+}
+
+.btn-action {
+    background: none;
+    border: 1px solid #e0e0e0;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.btn-action:hover {
+    background: #f5f5f5;
+}
+
+.btn-action.edit:hover {
+    border-color: #1565c0;
+    color: #1565c0;
+}
+
+.btn-action.delete:hover {
+    border-color: #c62828;
+    color: #c62828;
+}
+
+/* Delete Modal */
+.modal-small {
+    max-width: 380px;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-body p {
+    margin: 0 0 10px 0;
+    color: #666;
+}
+
+.delete-item-name {
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.modal-footer {
+    padding: 0 20px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-danger {
+    background: #c62828;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-danger:hover {
+    background: #b71c1c;
+}

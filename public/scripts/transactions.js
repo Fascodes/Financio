@@ -198,7 +198,13 @@ function renderTransactionItem(tx) {
             '</div>' +
             '<div class="transaction-meta">' + escapeHtml(tx.user_name || 'Unknown') + ' • ' + formattedDate + '</div>' +
         '</div>' +
-        '<div class="transaction-amount">$' + formattedAmount + '</div>' +
+        '<div class="transaction-right">' +
+            '<div class="transaction-actions">' +
+                '<button class="btn-action edit" onclick="openEditModal(' + tx.id + ')">Edit</button>' +
+                '<button class="btn-action delete" onclick="openDeleteModal(' + tx.id + ', \'' + escapeHtml(tx.name).replace(/'/g, "\\'") + '\')">Delete</button>' +
+            '</div>' +
+            '<div class="transaction-amount">$' + formattedAmount + '</div>' +
+        '</div>' +
     '</div>';
 }
 
@@ -402,5 +408,170 @@ function handleAddTransaction(event) {
     .finally(function() {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Add Transaction';
+    });
+}
+
+// ==================== EDIT FUNCTIONS ====================
+
+/**
+ * Open edit modal and load transaction data
+ */
+function openEditModal(transactionId) {
+    fetch('/api/transactions/get?id=' + transactionId)
+        .then(function(response) {
+            if (!response.ok) throw new Error('Failed to load transaction');
+            return response.json();
+        })
+        .then(function(data) {
+            if (data.success && data.transaction) {
+                populateEditForm(data.transaction);
+                document.getElementById('editModal').classList.add('open');
+            } else {
+                alert('Transaction not found');
+            }
+        })
+        .catch(function(error) {
+            console.error('Error loading transaction:', error);
+            alert('Failed to load transaction');
+        });
+}
+
+/**
+ * Populate edit form with transaction data
+ */
+function populateEditForm(tx) {
+    document.getElementById('editTransactionId').value = tx.id;
+    document.getElementById('editTransactionName').value = tx.name;
+    document.getElementById('editTransactionAmount').value = tx.amount;
+    document.getElementById('editTransactionDate').value = tx.date;
+    
+    // Populate categories in edit form
+    const editSelect = document.getElementById('editTransactionCategory');
+    const addSelect = document.getElementById('transactionCategory');
+    
+    // Copy options from add form to edit form
+    editSelect.innerHTML = addSelect.innerHTML;
+    editSelect.value = tx.category_id;
+}
+
+/**
+ * Close edit modal
+ */
+function closeEditModal() {
+    document.getElementById('editModal').classList.remove('open');
+}
+
+/**
+ * Handle edit transaction form submit
+ */
+function handleEditTransaction(event) {
+    event.preventDefault();
+
+    const form = document.getElementById('editTransactionForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving...';
+
+    const data = {
+        id: parseInt(document.getElementById('editTransactionId').value),
+        name: document.getElementById('editTransactionName').value.trim(),
+        amount: parseFloat(document.getElementById('editTransactionAmount').value),
+        category_id: parseInt(document.getElementById('editTransactionCategory').value),
+        date: document.getElementById('editTransactionDate').value
+    };
+
+    if (!data.name || !data.amount || !data.category_id || !data.date) {
+        alert('Please fill all required fields');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Changes';
+        return;
+    }
+
+    fetch('/api/transactions/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(function(response) {
+        return response.json().then(function(json) {
+            return { ok: response.ok, data: json };
+        });
+    })
+    .then(function(result) {
+        if (result.ok && result.data.success) {
+            closeEditModal();
+            loadTransactions();
+        } else {
+            alert('Error: ' + (result.data.error || 'Failed to update transaction'));
+        }
+    })
+    .catch(function(error) {
+        console.error('Error updating transaction:', error);
+        alert('Failed to update transaction. Please try again.');
+    })
+    .finally(function() {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Changes';
+    });
+}
+
+// ==================== DELETE FUNCTIONS ====================
+
+/**
+ * Open delete confirmation modal
+ */
+function openDeleteModal(transactionId, transactionName) {
+    document.getElementById('deleteTransactionId').value = transactionId;
+    document.getElementById('deleteItemName').textContent = transactionName;
+    document.getElementById('deleteModal').classList.add('open');
+}
+
+/**
+ * Close delete modal
+ */
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('open');
+}
+
+/**
+ * Confirm and execute delete
+ */
+function confirmDelete() {
+    const transactionId = document.getElementById('deleteTransactionId').value;
+    const deleteBtn = document.querySelector('#deleteModal .btn-danger');
+
+    deleteBtn.disabled = true;
+    deleteBtn.textContent = 'Deleting...';
+
+    fetch('/api/transactions/delete', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: parseInt(transactionId) })
+    })
+    .then(function(response) {
+        return response.json().then(function(json) {
+            return { ok: response.ok, data: json };
+        });
+    })
+    .then(function(result) {
+        if (result.ok && result.data.success) {
+            closeDeleteModal();
+            loadTransactions();
+        } else {
+            alert('Error: ' + (result.data.error || 'Failed to delete transaction'));
+        }
+    })
+    .catch(function(error) {
+        console.error('Error deleting transaction:', error);
+        alert('Failed to delete transaction. Please try again.');
+    })
+    .finally(function() {
+        deleteBtn.disabled = false;
+        deleteBtn.textContent = 'Delete';
     });
 }

@@ -133,4 +133,101 @@ class TransactionsController extends AppController {
             echo json_encode(['success' => false, 'error' => $result['error']]);
         }
     }
+
+    /**
+     * API: Pobierz pojedynczą transakcję
+     */
+    public function getTransaction() {
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
+
+        $userId = $_SESSION['user_id'];
+        $transactionId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+        if (!$transactionId) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Transaction ID required']);
+            return;
+        }
+
+        $transaction = $this->repository->getTransaction($transactionId, $userId);
+
+        header('Content-Type: application/json');
+
+        if ($transaction) {
+            echo json_encode(['success' => true, 'transaction' => $transaction]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'error' => 'Transaction not found']);
+        }
+    }
+
+    /**
+     * API: Aktualizuj transakcję (PUT)
+     */
+    public function updateTransaction() {
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
+
+        $userId = $_SESSION['user_id'];
+
+        // Pobierz dane z body
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!$input || empty($input['id'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid JSON or missing ID']);
+            return;
+        }
+
+        $result = $this->repository->updateTransaction((int)$input['id'], $userId, $input);
+
+        header('Content-Type: application/json');
+
+        if ($result['success']) {
+            echo json_encode(['success' => true]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => $result['error']]);
+        }
+    }
+
+    /**
+     * API: Usuń transakcję (DELETE)
+     */
+    public function deleteTransaction() {
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
+
+        $userId = $_SESSION['user_id'];
+
+        // Pobierz dane z body lub query string
+        $input = json_decode(file_get_contents('php://input'), true);
+        $transactionId = !empty($input['id']) ? (int)$input['id'] : (isset($_GET['id']) ? (int)$_GET['id'] : 0);
+
+        if (!$transactionId) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Transaction ID required']);
+            return;
+        }
+
+        $result = $this->repository->deleteTransaction($transactionId, $userId);
+
+        header('Content-Type: application/json');
+
+        if ($result['success']) {
+            echo json_encode(['success' => true]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => $result['error']]);
+        }
+    }
 }
