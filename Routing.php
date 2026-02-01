@@ -90,6 +90,26 @@ class Routing{
             'controller' => "ReportsController",
             'action' => 'reports'
         ],
+        'api/reports/summary' => [
+            'controller' => "ReportsController",
+            'action' => 'getSummaryStats'
+        ],
+        'api/reports/monthly-by-member' => [
+            'controller' => "ReportsController",
+            'action' => 'getMonthlyByMember'
+        ],
+        'api/reports/spending-trends' => [
+            'controller' => "ReportsController",
+            'action' => 'getSpendingTrends'
+        ],
+        'api/reports/category-distribution' => [
+            'controller' => "ReportsController",
+            'action' => 'getCategoryDistribution'
+        ],
+        'api/reports/member-contributions' => [
+            'controller' => "ReportsController",
+            'action' => 'getMemberContributions'
+        ],
         'members' => [
             'controller' => "MembersController",
             'action' => 'members'
