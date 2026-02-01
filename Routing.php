@@ -113,6 +113,22 @@ class Routing{
         'members' => [
             'controller' => "MembersController",
             'action' => 'members'
+        ],
+        'api/members/stats' => [
+            'controller' => "MembersController",
+            'action' => 'getMembersStats'
+        ],
+        'api/members/list' => [
+            'controller' => "MembersController",
+            'action' => 'getMembers'
+        ],
+        'api/members/update-role' => [
+            'controller' => "MembersController",
+            'action' => 'updateMemberRole'
+        ],
+        'api/members/remove' => [
+            'controller' => "MembersController",
+            'action' => 'removeMember'
         ]
     ];
     public static function run(string $path){
