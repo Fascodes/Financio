@@ -112,4 +112,56 @@ class GroupController extends AppController {
             echo json_encode(['success' => false, 'error' => $result['error']]);
         }
     }
+
+    /**
+     * API: Opuść grupę
+     */
+    public function leaveGroup() {
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+
+        $userId = $_SESSION['user_id'];
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (empty($input['group_id'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Group ID required']);
+            return;
+        }
+
+        $groupId = (int)$input['group_id'];
+        $result = $this->repository->leaveGroup($userId, $groupId);
+
+        header('Content-Type: application/json');
+
+        if ($result['success']) {
+            // Jeśli opuścił aktywną grupę, ustaw inną
+            if (isset($_SESSION['active_group_id']) && $_SESSION['active_group_id'] == $groupId) {
+                $groups = $this->repository->getUserGroups($userId);
+                if (!empty($groups)) {
+                    $_SESSION['active_group_id'] = $groups[0]['id'];
+                } else {
+                    unset($_SESSION['active_group_id']);
+                }
+            }
+            echo json_encode(['success' => true]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => $result['error']]);
+        }
+    }
+
+    /**
+     * Widok zarządzania grupami
+     */
+    public function groups() {
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            header('Location: /login');
+            exit;
+        }
+        include 'public/views/groups.php';
+    }
 }

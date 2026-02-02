@@ -1,0 +1,459 @@
+/* ========================================
+   GROUPS STYLES
+   Page-specific styles (base.css loaded first)
+   ======================================== */
+
+/* Page Header Override */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+    color: #2d3436;
+}
+
+.subtitle {
+    margin: 4px 0 0 0;
+    color: #636e72;
+    font-size: 14px;
+}
+
+.header-right {
+    display: flex;
+    gap: 10px;
+}
+
+/* Groups Container */
+.groups-container {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* Groups Grid */
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* Group Card */
+.group-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 2px solid transparent;
+}
+
+.group-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+.group-card.active {
+    border-color: #3b5bdb;
+    background: rgba(59, 91, 219, 0.04);
+}
+
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.group-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.role-badge.owner {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.role-badge.editor {
+    background: #d4edda;
+    color: #155724;
+}
+
+.group-info {
+    flex: 1;
+}
+
+.group-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d3436;
+    margin: 0 0 4px 0;
+}
+
+.group-description {
+    font-size: 14px;
+    color: #636e72;
+    margin: 0;
+}
+
+.group-stats {
+    display: flex;
+    gap: 24px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #b2bec3;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.stat-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3436;
+}
+
+.group-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.btn-select {
+    flex: 1;
+    background: #3b5bdb;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-select:hover {
+    background: #364fc7;
+}
+
+.btn-select:disabled {
+    background: #b2bec3;
+    cursor: not-allowed;
+}
+
+.btn-leave {
+    background: none;
+    border: 1px solid #ff6b6b;
+    color: #ff6b6b;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-leave:hover {
+    background: #ff6b6b;
+    color: white;
+}
+
+/* Active indicator */
+.active-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #00b894;
+    color: white;
+    margin-left: 8px;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.modal.modal-small {
+    max-width: 400px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #f5f6fa;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #2d3436;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #b2bec3;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: #636e72;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-body p {
+    margin: 0 0 10px 0;
+    color: #2d3436;
+}
+
+.warning-text {
+    color: #ff6b6b;
+    font-size: 13px;
+}
+
+.form-group {
+    padding: 0 20px;
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2d3436;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #3b5bdb;
+    box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 20px;
+    border-top: 1px solid #f5f6fa;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 0 20px 20px;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #b2bec3;
+    grid-column: 1 / -1;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.empty-state p {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .groups-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .header-right {
+        width: 100%;
+    }
+    
+    .header-right .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* === MOBILE STYLES === */
+@media (max-width: 576px) {
+    .page-header {
+        gap: 12px;
+    }
+    
+    .header-left h1 {
+        font-size: 20px;
+    }
+    
+    .subtitle {
+        font-size: 13px;
+    }
+    
+    .groups-container {
+        padding: 16px;
+        border-radius: 10px;
+    }
+    
+    .groups-grid {
+        gap: 12px;
+    }
+    
+    .group-card {
+        padding: 16px;
+        border-radius: 10px;
+        gap: 12px;
+    }
+    
+    .group-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+    
+    .group-name {
+        font-size: 16px;
+    }
+    
+    .group-description {
+        font-size: 13px;
+    }
+    
+    .group-stats {
+        gap: 16px;
+    }
+    
+    .stat-label {
+        font-size: 10px;
+    }
+    
+    .stat-value {
+        font-size: 14px;
+    }
+    
+    .group-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .btn-select,
+    .btn-leave {
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Modals - fullscreen on mobile */
+    .modal-overlay {
+        align-items: flex-end;
+    }
+    
+    .modal {
+        max-width: 100%;
+        border-radius: 16px 16px 0 0;
+        max-height: 85vh;
+    }
+    
+    .modal.modal-small {
+        max-width: 100%;
+    }
+    
+    .modal-header {
+        padding: 16px;
+    }
+    
+    .modal-header h2 {
+        font-size: 16px;
+    }
+    
+    .modal-body {
+        padding: 16px;
+    }
+    
+    .form-group {
+        padding: 0 16px;
+    }
+    
+    .form-actions,
+    .modal-footer {
+        padding: 16px;
+    }
+}
