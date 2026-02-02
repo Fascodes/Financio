@@ -191,8 +191,15 @@ INSERT INTO groups (name, owner_id, description, budget, is_active) VALUES
 INSERT INTO group_members (group_id, user_id, role) VALUES
 (1, 1, 'owner');
 
--- Sample Transactions
+-- Sample Transactions (mix of January and February 2026 for testing)
 INSERT INTO transactions (group_id, user_id, category_id, name, amount, date) VALUES
+-- February 2026 (current month)
+(1, 1, 1, 'Zakupy Biedronka', 185.30, '2026-02-02'),
+(1, 1, 3, 'Lunch w pracy', 45.00, '2026-02-01'),
+(1, 1, 2, 'Uber do centrum', 32.50, '2026-02-01'),
+(1, 1, 1, 'Pieczywo i nabiał', 28.90, '2026-01-31'),
+(1, 1, 6, 'Netflix - subskrypcja', 49.00, '2026-01-30'),
+-- January 2026 (last month)
 (1, 1, 1, 'Zakupy Tesco', 150.50, '2026-01-28'),
 (1, 1, 2, 'Benzyna 50L', 250.00, '2026-01-27'),
 (1, 1, 3, 'Obiad w restauracji', 120.00, '2026-01-26'),

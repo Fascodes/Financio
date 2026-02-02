@@ -6,56 +6,57 @@ $activePage = 'transactions';
 include 'public/views/partials/header.php';
 ?>
 <body onload="initializeTransactions()">
-    <?php include 'public/views/partials/topbar.php'; ?>
+    <div class="main-content">
+        <?php include 'public/views/partials/topbar.php'; ?>
+
+        <div class="page-container">
+            <!-- Header -->
+            <div class="page-header">
+                <div class="header-left">
+                    <h1>Transactions</h1>
+                    <p class="subtitle">Complete transaction history</p>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-primary" onclick="openAddModal()">
+                        + Add Transaction
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-container">
+                <div class="search-box">
+                    <span class="search-icon">S</span>
+                    <input type="text" id="searchInput" placeholder="Search transactions..." onkeyup="handleSearchInput(event)">
+                </div>
+                <div class="filter-group">
+                    <select id="categoryFilter" onchange="applyFilters()">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="memberFilter" onchange="applyFilters()">
+                        <option value="">All Members</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Transactions List -->
+            <div class="transactions-container">
+                <div class="transactions-header">
+                    <span id="transactionCount">0 Transactions</span>
+                </div>
+                <div class="transactions-list" id="transactionsList">
+                    <div class="loading">Loading transactions...</div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+
     <?php include 'public/views/partials/navbar.php'; ?>
-
-    <main class="main-content">
-        <!-- Header -->
-        <div class="page-header">
-            <div class="header-left">
-                <h1>Transactions</h1>
-                <p class="subtitle">Complete transaction history</p>
-            </div>
-            <div class="header-right">
-                <button class="btn-primary" onclick="openAddModal()">
-                    <span class="btn-icon">+</span> Add Transaction
-                </button>
-            </div>
-        </div>
-
-        <!-- Filters -->
-        <div class="filters-container">
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="Search transactions..." onkeyup="handleSearchInput(event)">
-            </div>
-            <div class="filter-group">
-                <span class="filter-icon">🔻</span>
-                <select id="categoryFilter" onchange="applyFilters()">
-                    <option value="">All Categories</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <span class="filter-icon">🔻</span>
-                <select id="memberFilter" onchange="applyFilters()">
-                    <option value="">All Members</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Transactions List -->
-        <div class="transactions-container">
-            <div class="transactions-header">
-                <span id="transactionCount">0 Transactions</span>
-            </div>
-            <div class="transactions-list" id="transactionsList">
-                <div class="loading">Loading transactions...</div>
-            </div>
-        </div>
-
-        <!-- Pagination -->
-        <div class="pagination" id="pagination"></div>
-    </main>
 
     <!-- Add Transaction Modal -->
     <div class="modal-overlay" id="addModal">
@@ -119,8 +120,8 @@ include 'public/views/partials/header.php';
                     <input type="date" id="editTransactionDate" name="date" required>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
                 </div>
             </form>
         </div>
@@ -139,8 +140,8 @@ include 'public/views/partials/header.php';
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="deleteTransactionId">
-                <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
-                <button type="button" class="btn-danger" onclick="confirmDelete()">Delete</button>
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
             </div>
         </div>
     </div>

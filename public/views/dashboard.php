@@ -10,68 +10,66 @@ include 'public/views/partials/header.php';
     <div class="main-content">
         <?php include 'public/views/partials/topbar.php'; ?>
         
-        <div class="dashboard-text">
-            <h1>DASHBOARD</h1>
-        </div>
-        <div class="top-widgets">
-            
-            <div class="widget" data-id="1">
-                <div class="widget-header">
-                    <span class="widget-title">Budżet</span>
+        <div class="page-container">
+            <div class="page-header">
+                <h1>Dashboard</h1>
+                <p class="page-subtitle">Overview of your group budget</p>
+            </div>
+
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Total Budget</span>
+                    </div>
+                    <div class="stat-value" id="budget-amount">$0.00</div>
+                    <div class="stat-label" id="budget-footer">Monthly allocation</div>
                 </div>
-                <div class="widget-amount" id="budget-amount">
-                    0.00 PLN
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Total Spending</span>
+                    </div>
+                    <div class="stat-value" id="spending-amount">$0.00</div>
+                    <div class="stat-label" id="spending-footer">0% of budget</div>
                 </div>
-                <div class="widget-footer" id="budget-footer">
-                    Miesięczna alokacja
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">Balance</span>
+                    </div>
+                    <div class="stat-value balance-positive" id="balance-amount">$0.00</div>
+                    <div class="stat-label" id="balance-footer">Remaining budget</div>
                 </div>
             </div>
 
-            <div class="widget" data-id="2">
-                <div class="widget-header">
-                    <span class="widget-title">Wydatki</span>
+            <div class="charts-section">
+                <div class="chart-card">
+                    <h3 class="chart-title">Spending Trends</h3>
+                    <div class="chart-container">
+                        <canvas id="trendsGraph"></canvas>
+                    </div>
                 </div>
-                <div class="widget-amount spending" id="spending-amount">
-                    0.00 PLN
-                </div>
-                <div class="widget-footer" id="spending-footer">
-                    0% budżetu
-                </div>
-            </div>
-
-            <div class="widget" data-id="3">
-                <div class="widget-header">
-                    <span class="widget-title">Balans</span>
-                </div>
-                <div class="widget-amount balance" id="balance-amount">
-                    0.00 PLN
-                </div>
-                <div class="widget-footer" id="balance-footer">
-                    Pozostały budżet
+                <div class="chart-card">
+                    <h3 class="chart-title">Spending by Category</h3>
+                    <div class="chart-container">
+                        <canvas id="categoryGraph"></canvas>
+                    </div>
                 </div>
             </div>
 
-        </div>
-        <div class="graph-widgets">
-            <canvas class="trends-graph" id="trendsGraph" width="400" height="200"></canvas>
-            <canvas class="category-graph" id="categoryGraph" width="400" height="200"></canvas>
-        </div>
-        <div class="bottom-widgets">
-            <div class="recent-transactions">
-                <div class="widget-list-header">
-                    <h3>Ostatnie transakcje</h3>
+            <div class="lists-section">
+                <div class="list-card">
+                    <h3 class="list-title">Recent Transactions</h3>
+                    <ul class="transaction-list" id="transactionList">
+                        <li class="loading">Loading...</li>
+                    </ul>
                 </div>
-                <ul class="transaction-list" id="transactionList">
-                    <li class="loading">Ładowanie danych...</li>
-                </ul>
-            </div>
-            <div class="group-members">
-                <div class="widget-list-header">
-                    <h3>Członkowie grupy</h3>
+                <div class="list-card">
+                    <h3 class="list-title">Group Members</h3>
+                    <ul class="members-list" id="membersList">
+                        <li class="loading">Loading...</li>
+                    </ul>
                 </div>
-                <ul class="members-list" id="membersList">
-                    <li class="loading">Ładowanie danych...</li>
-                </ul>
             </div>
         </div>
     </div>

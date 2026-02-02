@@ -15,34 +15,39 @@ async function loadBudgetSummary() {
 // Funkcja do renderowania podsumowania budżetu
 function renderBudgetSummary(data) {
     // Budżet
-    const budgetAmount = document.getElementById('budget-amount');
+    var budgetAmount = document.getElementById('budget-amount');
     if (budgetAmount) {
-        budgetAmount.textContent = data.budget.toFixed(2) + ' PLN';
+        budgetAmount.textContent = '$' + formatNumber(data.budget);
     }
 
     // Wydatki
-    const spendingAmount = document.getElementById('spending-amount');
-    const spendingFooter = document.getElementById('spending-footer');
+    var spendingAmount = document.getElementById('spending-amount');
+    var spendingFooter = document.getElementById('spending-footer');
     if (spendingAmount) {
-        spendingAmount.textContent = data.spending.toFixed(2) + ' PLN';
+        spendingAmount.textContent = '$' + formatNumber(data.spending);
     }
     if (spendingFooter) {
-        spendingFooter.textContent = data.percentage + '% budżetu';
+        spendingFooter.textContent = data.percentage + '% of budget';
     }
 
     // Balans
-    const balanceAmount = document.getElementById('balance-amount');
+    var balanceAmount = document.getElementById('balance-amount');
     if (balanceAmount) {
-        balanceAmount.textContent = data.balance.toFixed(2) + ' PLN';
+        balanceAmount.textContent = '$' + formatNumber(data.balance);
         // Dodaj klasę dla koloru (zielony jeśli dodatni, czerwony jeśli ujemny)
         if (data.balance >= 0) {
-            balanceAmount.classList.add('positive');
-            balanceAmount.classList.remove('negative');
+            balanceAmount.classList.add('balance-positive');
+            balanceAmount.classList.remove('balance-negative');
         } else {
-            balanceAmount.classList.add('negative');
-            balanceAmount.classList.remove('positive');
+            balanceAmount.classList.add('balance-negative');
+            balanceAmount.classList.remove('balance-positive');
         }
     }
+}
+
+// Funkcja do formatowania liczb z przecinkami
+function formatNumber(num) {
+    return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 // Funkcja do ładowania ostatnich transakcji via FETCH API
@@ -57,11 +62,11 @@ async function loadRecentTransactions() {
         if (transactions && transactions.length > 0) {
             renderTransactionList(transactions);
         } else {
-            document.getElementById('transactionList').innerHTML = '<li>Brak transakcji.</li>';
+            document.getElementById('transactionList').innerHTML = '<li class="empty-state"><p>No transactions yet</p></li>';
         }
     } catch (error) {
-        console.error('Błąd przy ładowaniu transakcji:', error);
-        document.getElementById('transactionList').innerHTML = '<li>Błąd przy ładowaniu danych.</li>';
+        console.error('Error loading transactions:', error);
+        document.getElementById('transactionList').innerHTML = '<li class="empty-state"><p>Error loading data</p></li>';
     }
 }
 
@@ -77,56 +82,90 @@ async function loadGroupMembers() {
         if (members && members.length > 0) {
             renderMembersList(members);
         } else {
-            document.getElementById('membersList').innerHTML = '<li>Brak członków grupy.</li>';
+            document.getElementById('membersList').innerHTML = '<li class="empty-state"><p>No group members</p></li>';
         }
     } catch (error) {
-        console.error('Błąd przy ładowaniu członków grupy:', error);
-        document.getElementById('membersList').innerHTML = '<li>Błąd przy ładowaniu danych.</li>';
+        console.error('Error loading group members:', error);
+        document.getElementById('membersList').innerHTML = '<li class="empty-state"><p>Error loading data</p></li>';
     }
 }
 
 // Funkcja do renderowania listy transakcji
 function renderTransactionList(transactions) {
-    const list = document.getElementById('transactionList');
+    var list = document.getElementById('transactionList');
     list.innerHTML = '';
 
-    transactions.forEach(transaction => {
-        const li = document.createElement('li');
+    transactions.forEach(function(transaction) {
+        var li = document.createElement('li');
         li.className = 'transaction-item';
-        li.innerHTML = `
-            <div class="transaction-info">
-                <span class="transaction-description">${transaction.description}</span>
-                <span class="transaction-category">${transaction.category}</span>
-            </div>
-            <div class="transaction-amount">${transaction.amount.toFixed(2)} PLN</div>
-            <div class="transaction-date">${transaction.date}</div>
-        `;
+        li.innerHTML = 
+            '<div class="transaction-info">' +
+                '<span class="transaction-description">' + escapeHtml(transaction.description) + '</span>' +
+                '<span class="transaction-meta">' + escapeHtml(transaction.username || 'Unknown') + ' - ' + formatDate(transaction.date) + '</span>' +
+            '</div>' +
+            '<div class="transaction-amount">$' + formatNumber(transaction.amount) + '</div>';
         list.appendChild(li);
     });
 }
 
+// Funkcja do formatowania daty
+function formatDate(dateStr) {
+    var date = new Date(dateStr);
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[date.getMonth()] + ' ' + date.getDate();
+}
+
+// Funkcja do escapowania HTML
+function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text || '';
+    return div.innerHTML;
+}
+
 // Funkcja do renderowania listy członków grupy
 function renderMembersList(members) {
-    const list = document.getElementById('membersList');
+    var list = document.getElementById('membersList');
     list.innerHTML = '';
 
-    members.forEach(member => {
-        const li = document.createElement('li');
-        li.className = `member-item ${member.balance >= 0 ? 'positive' : 'negative'}`;
-        const balanceClass = member.balance >= 0 ? 'balance-positive' : 'balance-negative';
-        const balanceSymbol = member.balance >= 0 ? '+' : '';
+    // Kolory awatarów
+    var avatarColors = [
+        'linear-gradient(135deg, #74b9ff, #0984e3)',
+        'linear-gradient(135deg, #fd79a8, #e84393)',
+        'linear-gradient(135deg, #55efc4, #00b894)',
+        'linear-gradient(135deg, #ffeaa7, #fdcb6e)',
+        'linear-gradient(135deg, #a29bfe, #6c5ce7)'
+    ];
+
+    members.forEach(function(member, index) {
+        var li = document.createElement('li');
+        li.className = 'member-item';
+        var balanceClass = member.balance >= 0 ? 'positive' : 'negative';
+        var balancePrefix = member.balance >= 0 ? '+$' : '$';
+        var statusText = member.balance >= 0 ? 'To receive' : 'To pay';
+        var initials = getInitials(member.name);
+        var avatarColor = avatarColors[index % avatarColors.length];
         
-        li.innerHTML = `
-            <div class="member-info">
-                <span class="member-name">${member.name}</span>
-                <span class="member-email">${member.email}</span>
-            </div>
-            <div class="member-balance ${balanceClass}">
-                ${balanceSymbol}${member.balance.toFixed(2)} PLN
-            </div>
-        `;
+        li.innerHTML = 
+            '<div class="member-avatar" style="background: ' + avatarColor + '">' + initials + '</div>' +
+            '<div class="member-info">' +
+                '<span class="member-name">' + escapeHtml(member.name) + '</span>' +
+                '<span class="member-status">' + statusText + '</span>' +
+            '</div>' +
+            '<div class="member-balance ' + balanceClass + '">' +
+                balancePrefix + formatNumber(Math.abs(member.balance)) +
+            '</div>';
         list.appendChild(li);
     });
+}
+
+// Funkcja do pobierania inicjałów
+function getInitials(name) {
+    if (!name) return '?';
+    var parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
 }
 
 async function loadChartData() {
@@ -166,59 +205,27 @@ async function loadCategoryData() {
 }
 
 function renderLineChart(chartData) {
-    const ctx = document.getElementById('trendsGraph').getContext('2d');
-    const labels = chartData.map(item => item.month);
-    const values = chartData.map(item => parseFloat(item.total));
+    var ctx = document.getElementById('trendsGraph').getContext('2d');
+    var labels = chartData.map(function(item) { return item.month; });
+    var values = chartData.map(function(item) { return parseFloat(item.total); });
 
     new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: 'Suma transakcji miesięcznie',
+                label: 'Monthly Spending',
                 data: values,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-}
-
-function renderPieChart(categoryData) {
-    const ctx = document.getElementById('categoryGraph').getContext('2d');
-    const labels = categoryData.map(item => item.category);
-    const values = categoryData.map(item => parseFloat(item.total));
-
-    const colors = [
-        'rgba(255, 99, 132, 0.7)',
-        'rgba(54, 162, 235, 0.7)',
-        'rgba(255, 206, 86, 0.7)',
-        'rgba(75, 192, 192, 0.7)',
-        'rgba(153, 102, 255, 0.7)',
-        'rgba(255, 159, 64, 0.7)',
-        'rgba(201, 203, 207, 0.7)',
-        'rgba(255, 99, 132, 0.7)',
-    ];
-
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Wydatki po kategoriach',
-                data: values,
-                backgroundColor: colors.slice(0, labels.length),
-                borderColor: '#fff',
+                borderColor: '#3b5bdb',
+                backgroundColor: 'rgba(59, 91, 219, 0.1)',
                 borderWidth: 2,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#3b5bdb',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6
             }]
         },
         options: {
@@ -226,7 +233,69 @@ function renderPieChart(categoryData) {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'bottom'
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        color: '#636e72'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#636e72'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function renderPieChart(categoryData) {
+    var ctx = document.getElementById('categoryGraph').getContext('2d');
+    var labels = categoryData.map(function(item) { return item.category; });
+    var values = categoryData.map(function(item) { return parseFloat(item.total); });
+
+    // Kolory zgodne z mockupem
+    var colors = [
+        '#00b894',  // zielony
+        '#0984e3',  // niebieski
+        '#6c5ce7',  // fioletowy
+        '#fdcb6e',  // żółty/pomarańczowy
+        '#636e72',  // szary
+        '#e84393',  // różowy
+        '#00cec9',  // turkusowy
+        '#fab1a0'   // łososiowy
+    ];
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Spending by Category',
+                data: values,
+                backgroundColor: colors.slice(0, labels.length),
+                borderColor: '#ffffff',
+                borderWidth: 3,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+                legend: {
+                    display: false
                 }
             }
         }
