@@ -1,40 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/public/styles/reports.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/public/scripts/main.js" defer></script>
-    <script src="/public/scripts/reports.js" defer></script>
-    <title>Reports</title>
-</head>
+<?php
+$pageTitle = 'Reports';
+$pageStyle = 'reports';
+$pageScript = 'reports';
+$activePage = 'reports';
+$extraScripts = ['https://cdn.jsdelivr.net/npm/chart.js'];
+include 'public/views/partials/header.php';
+?>
 <body onload="initializeReports()">
-    <div class="top-bar">
-        <div class="left-item">
-            <button class="burger-btn" onclick="toggleMenu()">☰</button>
-            <select>
-                <option>Placeholder</option>
-            </select>
-        </div>
-        <div class="right-item">
-            <button class="user-btn" onclick="toggleUserMenu()">U</button>
-            <div class="user-menu" id="userMenu">
-                <p class="username">Username</p>
-                <p class="email">email@example.com</p>
-                <button class="settings">Settings</button>
-                <button class="logout">Logout</button>
-            </div>
-        </div>
-    </div>
-    <nav class="nav-menu" id="navMenu">
-        <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/transactions">Transactions</a></li>
-            <li><a href="/reports" class="active">Reports</a></li>
-            <li><a href="/members">Members</a></li>
-        </ul>
-    </nav>
+    <?php include 'public/views/partials/topbar.php'; ?>
+    <?php include 'public/views/partials/navbar.php'; ?>
 
     <main class="main-content">
         <!-- Header -->

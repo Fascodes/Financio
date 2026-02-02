@@ -1,39 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/public/styles/transactions.css">
-    <script src="/public/scripts/main.js" defer></script>
-    <script src="/public/scripts/transactions.js" defer></script>
-    <title>Transactions</title>
-</head>
+<?php
+$pageTitle = 'Transactions';
+$pageStyle = 'transactions';
+$pageScript = 'transactions';
+$activePage = 'transactions';
+include 'public/views/partials/header.php';
+?>
 <body onload="initializeTransactions()">
-    <div class="top-bar">
-        <div class="left-item">
-            <button class="burger-btn" onclick="toggleMenu()">☰</button>
-            <select>
-                <option>Placeholder</option>
-            </select>
-        </div>
-        <div class="right-item">
-            <button class="user-btn" onclick="toggleUserMenu()">U</button>
-            <div class="user-menu" id="userMenu">
-                <p class="username">Username</p>
-                <p class="email">email@example.com</p>
-                <button class="settings">Settings</button>
-                <button class="logout">Logout</button>
-            </div>
-        </div>
-    </div>
-    <nav class="nav-menu" id="navMenu">
-        <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/transactions" class="active">Transactions</a></li>
-            <li><a href="/reports">Reports</a></li>
-            <li><a href="/members">Members</a></li>
-        </ul>
-    </nav>
+    <?php include 'public/views/partials/topbar.php'; ?>
+    <?php include 'public/views/partials/navbar.php'; ?>
 
     <main class="main-content">
         <!-- Header -->
@@ -75,15 +49,12 @@
                 <span id="transactionCount">0 Transactions</span>
             </div>
             <div class="transactions-list" id="transactionsList">
-                <!-- Transactions will be loaded here -->
                 <div class="loading">Loading transactions...</div>
             </div>
         </div>
 
         <!-- Pagination -->
-        <div class="pagination" id="pagination">
-            <!-- Pagination buttons will be loaded here -->
-        </div>
+        <div class="pagination" id="pagination"></div>
     </main>
 
     <!-- Add Transaction Modal -->

@@ -1,39 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/public/styles/members.css">
-    <script src="/public/scripts/main.js" defer></script>
-    <script src="/public/scripts/members.js" defer></script>
-    <title>Members</title>
-</head>
+<?php
+$pageTitle = 'Members';
+$pageStyle = 'members';
+$pageScript = 'members';
+$activePage = 'members';
+include 'public/views/partials/header.php';
+?>
 <body onload="initializeMembers()">
-    <div class="top-bar">
-        <div class="left-item">
-            <button class="burger-btn" onclick="toggleMenu()">☰</button>
-            <select>
-                <option>Placeholder</option>
-            </select>
-        </div>
-        <div class="right-item">
-            <button class="user-btn" onclick="toggleUserMenu()">U</button>
-            <div class="user-menu" id="userMenu">
-                <p class="username">Username</p>
-                <p class="email">email@example.com</p>
-                <button class="settings">Settings</button>
-                <button class="logout">Logout</button>
-            </div>
-        </div>
-    </div>
-    <nav class="nav-menu" id="navMenu">
-        <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/transactions">Transactions</a></li>
-            <li><a href="/reports">Reports</a></li>
-            <li><a href="/members" class="active">Members</a></li>
-        </ul>
-    </nav>
+    <?php include 'public/views/partials/topbar.php'; ?>
+    <?php include 'public/views/partials/navbar.php'; ?>
 
     <main class="main-content">
         <!-- Header -->
@@ -79,7 +53,6 @@
                 <span id="memberCount">0 Members</span>
             </div>
             <div class="members-grid" id="membersGrid">
-                <!-- Members will be loaded here -->
                 <div class="loading">Loading members...</div>
             </div>
         </div>
