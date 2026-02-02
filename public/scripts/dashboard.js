@@ -101,7 +101,7 @@ function renderTransactionList(transactions) {
         li.innerHTML = 
             '<div class="transaction-info">' +
                 '<span class="transaction-description">' + escapeHtml(transaction.description) + '</span>' +
-                '<span class="transaction-meta">' + escapeHtml(transaction.user_name || 'Unknown') + ' - ' + formatDate(transaction.date) + '</span>' +
+                '<span class="transaction-meta">' + escapeHtml(transaction.username || 'Unknown') + ' - ' + formatDate(transaction.date) + '</span>' +
             '</div>' +
             '<div class="transaction-amount">$' + formatNumber(transaction.amount) + '</div>';
         list.appendChild(li);
