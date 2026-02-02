@@ -6,57 +6,60 @@ $activePage = 'members';
 include 'public/views/partials/header.php';
 ?>
 <body onload="initializeMembers()">
-    <?php include 'public/views/partials/topbar.php'; ?>
+    <div class="main-content">
+        <?php include 'public/views/partials/topbar.php'; ?>
+
+        <div class="page-container">
+            <!-- Header -->
+            <div class="page-header">
+                <div class="header-left">
+                    <h1>Members</h1>
+                    <p class="subtitle">Group members and spending overview</p>
+                </div>
+                <div class="header-right" id="addMemberBtn" style="display: none;">
+                    <button class="btn btn-primary" onclick="openAddMemberModal()">
+                        + Add Member
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Widgets -->
+            <div class="summary-widgets">
+                <div class="summary-card">
+                    <h3>Total Members</h3>
+                    <div class="summary-value" id="totalMembersValue">0</div>
+                    <div class="summary-label">Active members</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Total Spent</h3>
+                    <div class="summary-value" id="totalSpentValue">$0</div>
+                    <div class="summary-label">Group total</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Top Contributor</h3>
+                    <div class="summary-value contributor-value" id="topContributorName">N/A</div>
+                    <div class="summary-label" id="topContributorAmount">$0 spent</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Avg Spending</h3>
+                    <div class="summary-value" id="avgSpendingValue">$0</div>
+                    <div class="summary-label">Per member</div>
+                </div>
+            </div>
+
+            <!-- Members Grid -->
+            <div class="members-container">
+                <div class="members-header">
+                    <span id="memberCount">0 Members</span>
+                </div>
+                <div class="members-grid" id="membersGrid">
+                    <div class="loading">Loading members...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php include 'public/views/partials/navbar.php'; ?>
-
-    <main class="main-content">
-        <!-- Header -->
-        <div class="page-header">
-            <div class="header-left">
-                <h1>Members</h1>
-                <p class="subtitle">Group members and spending overview</p>
-            </div>
-            <div class="header-right" id="addMemberBtn" style="display: none;">
-                <button class="btn-primary" onclick="openAddMemberModal()">
-                    <span class="btn-icon">+</span> Add Member
-                </button>
-            </div>
-        </div>
-
-        <!-- Summary Widgets -->
-        <div class="summary-widgets">
-            <div class="summary-card">
-                <h3>Total Members</h3>
-                <div class="summary-value" id="totalMembersValue">0</div>
-                <div class="summary-label">Active members</div>
-            </div>
-            <div class="summary-card">
-                <h3>Total Spent</h3>
-                <div class="summary-value" id="totalSpentValue">$0</div>
-                <div class="summary-label">Group total</div>
-            </div>
-            <div class="summary-card">
-                <h3>Top Contributor</h3>
-                <div class="summary-value contributor-value" id="topContributorName">N/A</div>
-                <div class="summary-label" id="topContributorAmount">$0 spent</div>
-            </div>
-            <div class="summary-card">
-                <h3>Avg Spending</h3>
-                <div class="summary-value" id="avgSpendingValue">$0</div>
-                <div class="summary-label">Per member</div>
-            </div>
-        </div>
-
-        <!-- Members Grid -->
-        <div class="members-container">
-            <div class="members-header">
-                <span id="memberCount">0 Members</span>
-            </div>
-            <div class="members-grid" id="membersGrid">
-                <div class="loading">Loading members...</div>
-            </div>
-        </div>
-    </main>
 
     <!-- Edit Member Modal -->
     <div class="modal-overlay" id="editMemberModal">
