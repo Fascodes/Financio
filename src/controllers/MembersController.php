@@ -34,7 +34,7 @@ class MembersController extends AppController {
         }
 
         $userId = $_SESSION['user_id'];
-        $groupId = !empty($_GET['group_id']) ? (int)$_GET['group_id'] : null;
+        $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
 
         $stats = $this->repository->getMembersStats($userId, $groupId);
 
@@ -53,7 +53,7 @@ class MembersController extends AppController {
         }
 
         $userId = $_SESSION['user_id'];
-        $groupId = !empty($_GET['group_id']) ? (int)$_GET['group_id'] : null;
+        $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
 
         $data = $this->repository->getMembers($userId, $groupId);
 
@@ -80,7 +80,7 @@ class MembersController extends AppController {
             return;
         }
 
-        $groupId = !empty($input['group_id']) ? (int)$input['group_id'] : $this->getFirstGroup($userId);
+        $groupId = $this->getActiveGroupId($input['group_id'] ?? null);
 
         $result = $this->repository->updateMemberRole(
             $userId, 
@@ -118,7 +118,7 @@ class MembersController extends AppController {
             return;
         }
 
-        $groupId = !empty($input['group_id']) ? (int)$input['group_id'] : $this->getFirstGroup($userId);
+        $groupId = $this->getActiveGroupId($input['group_id'] ?? null);
 
         $result = $this->repository->removeMember($userId, (int)$input['member_id'], $groupId);
 
@@ -130,16 +130,5 @@ class MembersController extends AppController {
             http_response_code(400);
             echo json_encode(['success' => false, 'error' => $result['error']]);
         }
-    }
-
-    private function getFirstGroup($userId) {
-        $stmt = DatabaseUtility::getConnection()->prepare(
-            "SELECT g.id FROM groups g
-             JOIN group_members gm ON g.id = gm.group_id
-             WHERE gm.user_id = ? LIMIT 1"
-        );
-        $stmt->execute([$userId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['id'] ?? null;
     }
 }

@@ -10,19 +10,24 @@ class DashboardRepository {
     }
 
     /**
-     * Pobierz miesięczne trendy wydatków dla zalogowanego użytkownika
+     * Pobierz miesięczne trendy wydatków dla grupy
      */
-    public function getMonthlyTrendData($userId) {
+    public function getMonthlyTrendData($userId, $groupId = null) {
         try{
+            if (!$groupId) {
+                $groupId = $this->getUserFirstGroup($userId);
+                if (!$groupId) return [];
+            }
+
             $stmt = $this->pdo->prepare(
                 "SELECT TO_CHAR(date, 'YYYY-MM') as month, SUM(amount) as total 
                 FROM transactions 
-                WHERE user_id = ? 
+                WHERE group_id = ? 
                 GROUP BY TO_CHAR(date, 'YYYY-MM')
                 ORDER BY month DESC
                 LIMIT 12"
             );
-            $stmt->execute([$userId]);
+            $stmt->execute([$groupId]);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             // Konwertuj total na float
@@ -38,19 +43,24 @@ class DashboardRepository {
     }
 
     /**
-     * Pobierz wydatki po kategoriach dla zalogowanego użytkownika
+     * Pobierz wydatki po kategoriach dla grupy
      */
-    public function getCategorySpendingData($userId) {
+    public function getCategorySpendingData($userId, $groupId = null) {
         try {
+            if (!$groupId) {
+                $groupId = $this->getUserFirstGroup($userId);
+                if (!$groupId) return [];
+            }
+
             $stmt = $this->pdo->prepare(
                 "SELECT c.name as category, SUM(t.amount) as total 
                  FROM transactions t
                  JOIN categories c ON t.category_id = c.id
-                 WHERE t.user_id = ?
+                 WHERE t.group_id = ?
                  GROUP BY c.name, c.id
                  ORDER BY total DESC"
             );
-            $stmt->execute([$userId]);
+            $stmt->execute([$groupId]);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             // Konwertuj total na float
@@ -65,19 +75,25 @@ class DashboardRepository {
     }
 
     /**
-     * Pobierz ostatnie transakcje użytkownika
+     * Pobierz ostatnie transakcje grupy
      */
-    public function getRecentTransactions($userId) {
+    public function getRecentTransactions($userId, $groupId = null) {
         try {
+            if (!$groupId) {
+                $groupId = $this->getUserFirstGroup($userId);
+                if (!$groupId) return [];
+            }
+
             $stmt = $this->pdo->prepare(
-                "SELECT t.id, t.name as description, t.amount, t.date, c.name as category
+                "SELECT t.id, t.name as description, t.amount, t.date, c.name as category, u.username
                  FROM transactions t
                  JOIN categories c ON t.category_id = c.id
-                 WHERE t.user_id = ?
+                 JOIN users u ON t.user_id = u.id
+                 WHERE t.group_id = ?
                  ORDER BY t.date DESC
                  LIMIT 10"
             );
-            $stmt->execute([$userId]);
+            $stmt->execute([$groupId]);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             // Konwertuj amount na float
@@ -97,17 +113,9 @@ class DashboardRepository {
      */
     public function getGroupMembers($userId, $groupId = null) {
         try {
-            // Jeśli groupId nie podany, użyj pierwszej grupy użytkownika
             if (!$groupId) {
-                $stmt = $this->pdo->prepare(
-                    "SELECT g.id FROM groups g
-                     JOIN group_members gm ON g.id = gm.group_id
-                     WHERE gm.user_id = ?
-                     LIMIT 1"
-                );
-                $stmt->execute([$userId]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                $groupId = $result['id'] ?? 1;
+                $groupId = $this->getUserFirstGroup($userId);
+                if (!$groupId) return [];
             }
 
             $stmt = $this->pdo->prepare(
@@ -137,18 +145,8 @@ class DashboardRepository {
      */
     public function getBudgetSummary($userId, $groupId = null) {
         try {
-            // Jeśli groupId nie podany, użyj pierwszej grupy użytkownika
             if (!$groupId) {
-                $stmt = $this->pdo->prepare(
-                    "SELECT g.id FROM groups g
-                     JOIN group_members gm ON g.id = gm.group_id
-                     WHERE gm.user_id = ?
-                     LIMIT 1"
-                );
-                $stmt->execute([$userId]);
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                $groupId = $result['id'] ?? null;
-                
+                $groupId = $this->getUserFirstGroup($userId);
                 if (!$groupId) {
                     return [
                         'budget' => 0.0,
@@ -197,5 +195,17 @@ class DashboardRepository {
                 'percentage' => 0.0
             ];
         }
+    }
+
+    private function getUserFirstGroup($userId) {
+        $stmt = $this->pdo->prepare(
+            "SELECT g.id FROM groups g
+             JOIN group_members gm ON g.id = gm.group_id
+             WHERE gm.user_id = ?
+             LIMIT 1"
+        );
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['id'] ?? null;
     }
 }

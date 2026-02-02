@@ -1,8 +1,8 @@
 <div class="top-bar">
     <div class="left-item">
         <button class="burger-btn" onclick="toggleMenu()">☰</button>
-        <select>
-            <option>Placeholder</option>
+        <select id="groupSelector" onchange="changeGroup(this.value)">
+            <option value="">Wybierz grupę...</option>
         </select>
     </div>
     <div class="right-item">
@@ -11,7 +11,7 @@
             <p class="username">Username</p>
             <p class="email">email@example.com</p>
             <button class="settings">Settings</button>
-            <button class="logout">Logout</button>
+            <button class="logout" onclick="handleLogout()">Logout</button>
         </div>
     </div>
 </div>

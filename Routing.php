@@ -5,6 +5,7 @@ require_once 'src/controllers/TransactionsController.php';
 require_once 'src/controllers/ReportsController.php';
 require_once 'src/controllers/MembersController.php';
 require_once 'src/controllers/LoginController.php';
+require_once 'src/controllers/GroupController.php';
 
 
 class Routing{
@@ -29,6 +30,18 @@ class Routing{
         'api/current-user' => [
             'controller' => "LoginController",
             'action' => 'getCurrentUser'
+        ],
+        'api/groups' => [
+            'controller' => "GroupController",
+            'action' => 'getUserGroups'
+        ],
+        'api/groups/set-active' => [
+            'controller' => "GroupController",
+            'action' => 'setActiveGroup'
+        ],
+        'api/groups/create' => [
+            'controller' => "GroupController",
+            'action' => 'createGroup'
         ],
         'dashboard' => [
             'controller' => "DashboardController",

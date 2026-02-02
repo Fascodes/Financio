@@ -13,6 +13,16 @@ class AppController {
     {
         return $_SERVER['REQUEST_METHOD'] === 'POST';
     }
+
+    /**
+     * Pobierz aktywną grupę z sesji lub z parametru
+     */
+    protected function getActiveGroupId($paramGroupId = null) {
+        if (!empty($paramGroupId)) {
+            return (int)$paramGroupId;
+        }
+        return isset($_SESSION['active_group_id']) ? (int)$_SESSION['active_group_id'] : null;
+    }
     
     protected function render(string $template = null, array $variables = [])
     {

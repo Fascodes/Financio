@@ -51,7 +51,7 @@ class TransactionsController extends AppController {
             $filters['user_id'] = (int)$_GET['user_id'];
         }
 
-        $groupId = !empty($_GET['group_id']) ? (int)$_GET['group_id'] : null;
+        $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
 
         $result = $this->repository->getTransactions($userId, $groupId, $filters, $page, $limit);
 
@@ -86,7 +86,7 @@ class TransactionsController extends AppController {
         }
 
         $userId = $_SESSION['user_id'];
-        $groupId = !empty($_GET['group_id']) ? (int)$_GET['group_id'] : null;
+        $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
 
         $users = $this->repository->getGroupUsers($userId, $groupId);
 

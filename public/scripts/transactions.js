@@ -9,6 +9,8 @@ let searchTimeout = null;
  * Initialize transactions page
  */
 function initializeTransactions() {
+    loadCurrentUser();
+    loadUserGroups();
     loadCategories();
     loadGroupUsers();
     loadTransactions();

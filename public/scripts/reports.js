@@ -9,6 +9,8 @@ let memberContributionsChart = null;
  * Initialize reports page
  */
 function initializeReports() {
+    loadCurrentUser();
+    loadUserGroups();
     loadSummaryStats();
     loadMonthlyComparison();
     loadSpendingTrends();

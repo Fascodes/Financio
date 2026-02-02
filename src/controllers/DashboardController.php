@@ -28,7 +28,8 @@ class DashboardController extends AppController {
         }
 
         $userId = $_SESSION['user_id'];
-        $data = $this->dashboardRepository->getMonthlyTrendData($userId);
+        $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
+        $data = $this->dashboardRepository->getMonthlyTrendData($userId, $groupId);
 
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -43,7 +44,8 @@ class DashboardController extends AppController {
         }
 
         $userId = $_SESSION['user_id'];
-        $data = $this->dashboardRepository->getCategorySpendingData($userId);
+        $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
+        $data = $this->dashboardRepository->getCategorySpendingData($userId, $groupId);
 
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -58,7 +60,8 @@ class DashboardController extends AppController {
         }
 
         $userId = $_SESSION['user_id'];
-        $data = $this->dashboardRepository->getRecentTransactions($userId);
+        $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
+        $data = $this->dashboardRepository->getRecentTransactions($userId, $groupId);
 
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -73,7 +76,8 @@ class DashboardController extends AppController {
         }
 
         $userId = $_SESSION['user_id'];
-        $data = $this->dashboardRepository->getGroupMembers($userId);
+        $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
+        $data = $this->dashboardRepository->getGroupMembers($userId, $groupId);
 
         header('Content-Type: application/json');
         echo json_encode($data);
@@ -88,7 +92,8 @@ class DashboardController extends AppController {
         }
 
         $userId = $_SESSION['user_id'];
-        $data = $this->dashboardRepository->getBudgetSummary($userId);
+        $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
+        $data = $this->dashboardRepository->getBudgetSummary($userId, $groupId);
 
         header('Content-Type: application/json');
         echo json_encode($data);

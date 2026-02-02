@@ -11,6 +11,8 @@ let isOwner = false;
  * Initialize the members page
  */
 function initializeMembers() {
+    loadCurrentUser();
+    loadUserGroups();
     loadMembersStats();
     loadMembers();
 }
