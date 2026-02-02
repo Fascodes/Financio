@@ -401,3 +401,188 @@
         width: 100%;
     }
 }
+
+/* === MOBILE STYLES === */
+@media (max-width: 576px) {
+    /* Page header - compact */
+    .page-header {
+        gap: 12px;
+    }
+    
+    .header-left h1 {
+        font-size: 20px;
+    }
+    
+    .subtitle {
+        font-size: 13px;
+    }
+    
+    .header-right {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .header-right .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Summary widgets - single column, compact */
+    .summary-widgets {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .summary-card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+    
+    .summary-card h3 {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+    
+    .summary-value {
+        font-size: 22px;
+    }
+    
+    .summary-value.contributor-value {
+        font-size: 16px;
+    }
+    
+    .summary-label {
+        font-size: 11px;
+    }
+    
+    /* Members container */
+    .members-container {
+        padding: 16px;
+        border-radius: 10px;
+    }
+    
+    .members-header {
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+    }
+    
+    .members-header span {
+        font-size: 13px;
+    }
+    
+    /* Members grid - single column */
+    .members-grid {
+        gap: 12px;
+    }
+    
+    /* Member cards - compact */
+    .member-card {
+        padding: 16px;
+        border-radius: 10px;
+        gap: 12px;
+    }
+    
+    .member-avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+    }
+    
+    .member-name {
+        font-size: 16px;
+    }
+    
+    .role-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+    
+    .member-joined {
+        font-size: 11px;
+    }
+    
+    .member-email {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+    
+    .member-stats {
+        gap: 16px;
+        margin-bottom: 10px;
+    }
+    
+    .stat-label {
+        font-size: 10px;
+    }
+    
+    .stat-value {
+        font-size: 14px;
+    }
+    
+    .member-actions {
+        gap: 6px;
+    }
+    
+    .btn-edit,
+    .btn-remove {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
+    /* Modals - fullscreen on mobile */
+    .modal-overlay {
+        align-items: flex-end;
+    }
+    
+    .modal {
+        max-width: 100%;
+        border-radius: 16px 16px 0 0;
+        max-height: 85vh;
+    }
+    
+    .modal.modal-small {
+        max-width: 100%;
+    }
+    
+    .modal-header {
+        padding: 16px;
+    }
+    
+    .modal-header h2 {
+        font-size: 16px;
+    }
+    
+    .modal-body {
+        padding: 16px;
+    }
+    
+    .form-group {
+        padding: 0 16px;
+        margin-bottom: 16px;
+    }
+    
+    .form-group label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+    
+    .form-group input,
+    .form-group select {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .form-actions {
+        padding: 16px;
+        gap: 8px;
+    }
+    
+    /* Empty state */
+    .empty-state {
+        padding: 32px 16px;
+    }
+    
+    .empty-state-icon {
+        font-size: 40px;
+    }
+}

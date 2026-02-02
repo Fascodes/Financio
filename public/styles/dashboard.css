@@ -246,3 +246,109 @@
         height: 220px;
     }
 }
+
+/* === MOBILE STYLES === */
+@media (max-width: 576px) {
+    /* Stats cards - single column, compact */
+    .stats-cards {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .stat-card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+    
+    .stat-title {
+        font-size: 13px;
+    }
+    
+    .stat-value {
+        font-size: 22px;
+        margin-bottom: 4px;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+    }
+    
+    /* Charts - stacked, smaller */
+    .charts-section {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .chart-card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+    
+    .chart-title {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .chart-container {
+        height: 200px;
+    }
+    
+    /* Lists - stacked, compact */
+    .lists-section {
+        gap: 12px;
+    }
+    
+    .list-card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+    
+    .list-title {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .transaction-list,
+    .members-list {
+        max-height: 280px;
+    }
+    
+    .transaction-item {
+        padding: 10px 0;
+    }
+    
+    .transaction-description {
+        font-size: 13px;
+    }
+    
+    .transaction-meta {
+        font-size: 11px;
+    }
+    
+    .transaction-amount {
+        font-size: 13px;
+    }
+    
+    .member-item {
+        padding: 10px 0;
+    }
+    
+    .member-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 12px;
+        margin-right: 10px;
+    }
+    
+    .member-name {
+        font-size: 13px;
+    }
+    
+    .member-status {
+        font-size: 11px;
+    }
+    
+    .member-balance {
+        font-size: 13px;
+    }
+}

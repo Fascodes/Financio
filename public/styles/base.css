@@ -339,3 +339,93 @@ body {
         padding: 0 16px;
     }
 }
+
+/* === MOBILE STYLES === */
+@media (max-width: 576px) {
+    /* Top bar - compact layout */
+    .top-bar {
+        padding: 0 12px;
+        height: 56px;
+    }
+    
+    .left-item {
+        gap: 8px;
+    }
+    
+    #groupSelector {
+        min-width: 120px;
+        padding: 6px 28px 6px 10px;
+        font-size: 13px;
+        background-position: right 8px center;
+    }
+    
+    .burger-btn {
+        padding: 6px;
+        font-size: 18px;
+    }
+    
+    .user-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    
+    .user-menu {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 16px 16px 0 0;
+        min-width: 100%;
+        padding: 20px;
+    }
+    
+    /* Fullscreen navigation menu */
+    .nav-menu {
+        width: 100%;
+        left: -100%;
+    }
+    
+    .nav-menu.open {
+        left: 0;
+    }
+    
+    .nav-menu ul {
+        padding: 20px;
+    }
+    
+    .nav-menu a {
+        padding: 16px 20px;
+        font-size: 16px;
+    }
+    
+    /* Page layout */
+    .page-container {
+        padding: 12px;
+    }
+    
+    .page-header {
+        margin-bottom: 16px;
+    }
+    
+    .page-header h1 {
+        font-size: 20px;
+    }
+    
+    .page-subtitle {
+        font-size: 13px;
+    }
+    
+    /* Cards */
+    .card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+    
+    /* Buttons */
+    .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+}

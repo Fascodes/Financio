@@ -130,3 +130,59 @@
         font-size: 24px;
     }
 }
+
+/* === MOBILE STYLES === */
+@media (max-width: 576px) {
+    /* Summary widgets - single column, compact */
+    .summary-widgets {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .summary-card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+    
+    .summary-card h3 {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+    
+    .summary-value {
+        font-size: 22px;
+    }
+    
+    .summary-value.category-value {
+        font-size: 18px;
+    }
+    
+    .summary-label {
+        font-size: 12px;
+    }
+    
+    /* Chart cards - compact */
+    .chart-card {
+        padding: 16px;
+        border-radius: 10px;
+        margin-bottom: 16px;
+    }
+    
+    .chart-card h3 {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+    
+    .chart-container {
+        height: 220px;
+    }
+    
+    .pie-container {
+        height: 200px;
+    }
+    
+    /* Charts row - stacked */
+    .charts-row {
+        gap: 16px;
+    }
+}
