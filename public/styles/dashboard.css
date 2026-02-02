@@ -115,24 +115,14 @@
     list-style: none;
     max-height: 320px;
     overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
 }
 
-/* Custom scrollbar */
+/* Hide scrollbar for Chrome, Safari, Opera */
 .transaction-list::-webkit-scrollbar,
 .members-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-.transaction-list::-webkit-scrollbar-track,
-.members-list::-webkit-scrollbar-track {
-    background: #f5f6fa;
-    border-radius: 3px;
-}
-
-.transaction-list::-webkit-scrollbar-thumb,
-.members-list::-webkit-scrollbar-thumb {
-    background: #b2bec3;
-    border-radius: 3px;
+    display: none;
 }
 
 /* === TRANSACTION ITEMS === */
