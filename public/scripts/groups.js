@@ -253,7 +253,7 @@ function confirmLeaveGroup() {
         if (result.success) {
             closeLeaveModal();
             loadGroups();
-            loadUserData(); // Refresh topbar selector
+            loadGroupsForSelector();
         } else {
             alert('Error leaving group: ' + (result.error || 'Unknown error'));
         }

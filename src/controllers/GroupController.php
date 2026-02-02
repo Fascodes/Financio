@@ -155,6 +155,48 @@ class GroupController extends AppController {
     }
 
     /**
+     * API: Dodaj członka do grupy
+     */
+    public function addMember() {
+        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
+            return;
+        }
+
+        $userId = $_SESSION['user_id'];
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (empty($input['group_id']) || empty($input['email'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Group ID and email required']);
+            return;
+        }
+
+        $groupId = (int)$input['group_id'];
+        $email = trim($input['email']);
+        $role = isset($input['role']) && $input['role'] === 'owner' ? 'owner' : 'editor';
+
+        // Sprawdź czy użytkownik jest właścicielem grupy
+        if (!$this->repository->isGroupOwner($userId, $groupId)) {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'error' => 'Only group owners can add members']);
+            return;
+        }
+
+        $result = $this->repository->addMemberByEmail($groupId, $email, $role);
+
+        header('Content-Type: application/json');
+
+        if ($result['success']) {
+            echo json_encode(['success' => true]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => $result['error']]);
+        }
+    }
+
+    /**
      * Widok zarządzania grupami
      */
     public function groups() {

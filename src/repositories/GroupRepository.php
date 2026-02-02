@@ -124,4 +124,52 @@ class GroupRepository {
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
+
+    /**
+     * Dodaj użytkownika do grupy (przez email)
+     */
+    public function addMemberByEmail($groupId, $email, $role = 'editor') {
+        try {
+            // Znajdź użytkownika po emailu
+            $stmt = $this->pdo->prepare("SELECT id FROM users WHERE email = ? AND is_active = TRUE");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$user) {
+                return ['success' => false, 'error' => 'User with this email not found'];
+            }
+
+            $userId = $user['id'];
+
+            // Sprawdź czy użytkownik już jest w grupie
+            $stmt = $this->pdo->prepare(
+                "SELECT 1 FROM group_members WHERE user_id = ? AND group_id = ?"
+            );
+            $stmt->execute([$userId, $groupId]);
+            if ($stmt->fetch()) {
+                return ['success' => false, 'error' => 'User is already a member of this group'];
+            }
+
+            // Dodaj użytkownika do grupy
+            $stmt = $this->pdo->prepare(
+                "INSERT INTO group_members (group_id, user_id, role) VALUES (?, ?, ?)"
+            );
+            $stmt->execute([$groupId, $userId, $role]);
+
+            return ['success' => true, 'user_id' => $userId];
+        } catch (PDOException $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Sprawdź czy użytkownik jest właścicielem grupy
+     */
+    public function isGroupOwner($userId, $groupId) {
+        $stmt = $this->pdo->prepare(
+            "SELECT 1 FROM group_members WHERE user_id = ? AND group_id = ? AND role = 'owner'"
+        );
+        $stmt->execute([$userId, $groupId]);
+        return $stmt->fetch() !== false;
+    }
 }

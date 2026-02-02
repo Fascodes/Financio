@@ -47,6 +47,10 @@ class Routing{
             'controller' => "GroupController",
             'action' => 'leaveGroup'
         ],
+        'api/groups/add-member' => [
+            'controller' => "GroupController",
+            'action' => 'addMember'
+        ],
         'groups' => [
             'controller' => "GroupController",
             'action' => 'groups'
