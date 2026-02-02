@@ -21,7 +21,7 @@ class TransactionsController extends AppController {
             header('Location: /login');
             exit;
         }
-        include 'public/views/transactions.html';
+        include 'public/views/transactions.php';
     }
 
     /**

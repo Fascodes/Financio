@@ -20,7 +20,7 @@ class MembersController extends AppController {
             header('Location: /login');
             exit;
         }
-        include 'public/views/members.html';
+        include 'public/views/members.php';
     }
 
     /**

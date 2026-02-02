@@ -20,7 +20,7 @@ class ReportsController extends AppController {
             header('Location: /login');
             exit;
         }
-        include 'public/views/reports.html';
+        include 'public/views/reports.php';
     }
 
     /**

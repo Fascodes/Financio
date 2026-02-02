@@ -1,34 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/public/styles/dashboard.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/public/scripts/main.js" defer></script>
-    <script src="/public/scripts/dashboard.js" defer></script>
-    <title>DASHBOARD</title>
-</head>
+<?php
+$pageTitle = 'Dashboard';
+$pageStyle = 'dashboard';
+$pageScript = 'dashboard';
+$activePage = 'dashboard';
+$extraScripts = ['https://cdn.jsdelivr.net/npm/chart.js'];
+include 'public/views/partials/header.php';
+?>
 <body>
-
     <div class="main-content">
-        <div class="top-bar">
-            <div class="left-item">
-                <button class="burger-btn" onclick="toggleMenu()">☰</button>
-                <select>
-                    <option>Placeholder</option>
-                </select>
-            </div>
-            <div class="right-item">
-                <button class="user-btn" onclick="toggleUserMenu()">U</button>
-                <div class="user-menu" id="userMenu">
-                    <p class="username">Username</p>
-                    <p class="email">email@example.com</p>
-                    <button class="settings">Settings</button>
-                    <button class="logout">Logout</button>
-                </div>
-            </div>
-        </div>
+        <?php include 'public/views/partials/topbar.php'; ?>
+        
         <div class="dashboard-text">
             <h1>DASHBOARD</h1>
         </div>
@@ -38,11 +19,9 @@
                 <div class="widget-header">
                     <span class="widget-title">Budżet</span>
                 </div>
-
                 <div class="widget-amount" id="budget-amount">
                     0.00 PLN
                 </div>
-
                 <div class="widget-footer" id="budget-footer">
                     Miesięczna alokacja
                 </div>
@@ -52,11 +31,9 @@
                 <div class="widget-header">
                     <span class="widget-title">Wydatki</span>
                 </div>
-
                 <div class="widget-amount spending" id="spending-amount">
                     0.00 PLN
                 </div>
-
                 <div class="widget-footer" id="spending-footer">
                     0% budżetu
                 </div>
@@ -66,11 +43,9 @@
                 <div class="widget-header">
                     <span class="widget-title">Balans</span>
                 </div>
-
                 <div class="widget-amount balance" id="balance-amount">
                     0.00 PLN
                 </div>
-
                 <div class="widget-footer" id="balance-footer">
                     Pozostały budżet
                 </div>
@@ -78,14 +53,8 @@
 
         </div>
         <div class="graph-widgets">
-            <canvas class="trends-graph" id="trendsGraph" width="400" height="200">
-
-            </canvas>
-
-            <canvas class="category-graph" id="categoryGraph" width="400" height="200">
-
-            </canvas>
-
+            <canvas class="trends-graph" id="trendsGraph" width="400" height="200"></canvas>
+            <canvas class="category-graph" id="categoryGraph" width="400" height="200"></canvas>
         </div>
         <div class="bottom-widgets">
             <div class="recent-transactions">
@@ -107,20 +76,13 @@
         </div>
     </div>
 
-    <nav class="nav-menu" id="navMenu">
-        <ul>
-            <li><a href="/dashboard" class="active">Dashboard</a></li>
-            <li><a href="/transactions">Transactions</a></li>
-            <li><a href="/reports">Reports</a></li>
-            <li><a href="/members">Members</a></li>
-        </ul>
-    </nav>
+    <?php include 'public/views/partials/navbar.php'; ?>
 
     <script>
-        // Inicjalizacja po załadowaniu strony
         window.onload = function() {
             initializeDashboard();
             initializeCharts();
         };
     </script>
 </body>
+</html>

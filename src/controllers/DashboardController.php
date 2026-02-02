@@ -16,7 +16,7 @@ class DashboardController extends AppController {
             exit();
         }
 
-        include 'public/views/dashboard.html';
+        include 'public/views/dashboard.php';
     }
 
     public function getChartData() {
