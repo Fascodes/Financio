@@ -3,6 +3,7 @@ var activeGroupId = null;
 
 function toggleMenu() {
     document.getElementById('navMenu').classList.toggle('open');
+    document.getElementById('navOverlay').classList.toggle('open');
 }
 
 function toggleUserMenu() {

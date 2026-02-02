@@ -2,7 +2,7 @@
     <div class="left-item">
         <button class="burger-btn" onclick="toggleMenu()">☰</button>
         <select id="groupSelector" onchange="changeGroup(this.value)">
-            <option value="">Wybierz grupę...</option>
+            <option value="">Select group...</option>
         </select>
     </div>
     <div class="right-item">
@@ -10,8 +10,8 @@
         <div class="user-menu" id="userMenu">
             <p class="username">Username</p>
             <p class="email">email@example.com</p>
-            <button class="settings">Settings</button>
             <button class="logout" onclick="handleLogout()">Logout</button>
         </div>
     </div>
 </div>
+<div class="nav-overlay" id="navOverlay" onclick="toggleMenu()"></div>
