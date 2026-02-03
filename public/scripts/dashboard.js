@@ -45,11 +45,6 @@ function renderBudgetSummary(data) {
     }
 }
 
-// Funkcja do formatowania liczb z przecinkami
-function formatNumber(num) {
-    return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
 // Funkcja do ładowania ostatnich transakcji via FETCH API
 async function loadRecentTransactions() {
     try {
@@ -108,20 +103,6 @@ function renderTransactionList(transactions) {
     });
 }
 
-// Funkcja do formatowania daty
-function formatDate(dateStr) {
-    var date = new Date(dateStr);
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return months[date.getMonth()] + ' ' + date.getDate();
-}
-
-// Funkcja do escapowania HTML
-function escapeHtml(text) {
-    var div = document.createElement('div');
-    div.textContent = text || '';
-    return div.innerHTML;
-}
-
 // Funkcja do renderowania listy członków grupy
 function renderMembersList(members) {
     var list = document.getElementById('membersList');
@@ -156,16 +137,6 @@ function renderMembersList(members) {
             '</div>';
         list.appendChild(li);
     });
-}
-
-// Funkcja do pobierania inicjałów
-function getInitials(name) {
-    if (!name) return '?';
-    var parts = name.trim().split(' ');
-    if (parts.length >= 2) {
-        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-    }
-    return name.substring(0, 2).toUpperCase();
 }
 
 async function loadChartData() {

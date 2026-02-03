@@ -1,6 +1,91 @@
 // Globalna zmienna dla aktywnej grupy
 var activeGroupId = null;
 
+// =====================
+// FUNKCJE POMOCNICZE (UTILS)
+// =====================
+
+/**
+ * Formatuj liczbę z 2 miejscami dziesiętnymi i separatorami tysięcy
+ * @param {number} num
+ * @returns {string}
+ */
+function formatNumber(num) {
+    return parseFloat(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+/**
+ * Formatuj datę do czytelnego formatu (Jan 15, 2025)
+ * @param {string} dateStr
+ * @returns {string}
+ */
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    var date = new Date(dateStr);
+    var options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
+
+/**
+ * Formatuj datę do krótkiego formatu (Jan 15)
+ * @param {string} dateStr
+ * @returns {string}
+ */
+function formatDateShort(dateStr) {
+    if (!dateStr) return '';
+    var date = new Date(dateStr);
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[date.getMonth()] + ' ' + date.getDate();
+}
+
+/**
+ * Escape HTML aby zapobiec XSS
+ * @param {string} text
+ * @returns {string}
+ */
+function escapeHtml(text) {
+    if (!text) return '';
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+/**
+ * Pobierz inicjały z imienia i nazwiska
+ * @param {string} name
+ * @returns {string}
+ */
+function getInitials(name) {
+    if (!name) return '?';
+    var parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+        return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+}
+
+/**
+ * Formatuj kwotę (alias dla formatNumber)
+ * @param {number} amount
+ * @returns {string}
+ */
+function formatAmount(amount) {
+    return parseFloat(amount).toFixed(2);
+}
+
+/**
+ * Formatuj walutę
+ * @param {number} amount
+ * @returns {string}
+ */
+function formatCurrency(amount) {
+    return '$' + formatNumber(amount);
+}
+
+// =====================
+// NAWIGACJA I MENU
+// =====================
+
 function toggleMenu() {
     document.getElementById('navMenu').classList.toggle('open');
     document.getElementById('navOverlay').classList.toggle('open');

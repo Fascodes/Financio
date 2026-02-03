@@ -160,44 +160,7 @@ function renderMemberCard(member) {
     '</div>';
 }
 
-/**
- * Get initials from name
- */
-function getInitials(name) {
-    if (!name) return '?';
-    var parts = name.trim().split(' ');
-    if (parts.length >= 2) {
-        return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
-    }
-    return name.charAt(0).toUpperCase();
-}
-
-/**
- * Format number with commas
- */
-function formatNumber(num) {
-    return parseFloat(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-/**
- * Format date string
- */
-function formatDate(dateString) {
-    if (!dateString) return 'Unknown';
-    var date = new Date(dateString);
-    var options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
-}
-
-/**
- * Escape HTML to prevent XSS
- */
-function escapeHtml(text) {
-    if (!text) return '';
-    var div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+// Funkcje formatNumber, formatDate, escapeHtml, getInitials są teraz w main.js
 
 /**
  * Open edit member modal

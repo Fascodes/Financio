@@ -1,13 +1,8 @@
 <?php
 
-require_once 'src/utility/DatabaseUtility.php';
+require_once 'src/repositories/BaseRepository.php';
 
-class MembersRepository {
-    private $pdo;
-
-    public function __construct() {
-        $this->pdo = DatabaseUtility::getConnection();
-    }
+class MembersRepository extends BaseRepository {
 
     /**
      * Pobierz statystyki członków grupy
@@ -168,18 +163,6 @@ class MembersRepository {
     }
 
     /**
-     * Sprawdź czy użytkownik jest właścicielem grupy
-     */
-    public function isGroupOwner($userId, $groupId) {
-        $stmt = $this->pdo->prepare(
-            "SELECT role FROM group_members WHERE user_id = ? AND group_id = ?"
-        );
-        $stmt->execute([$userId, $groupId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result && $result['role'] === 'owner';
-    }
-
-    /**
      * Zmień rolę członka (tylko owner może)
      */
     public function updateMemberRole($ownerId, $memberId, $groupId, $newRole) {
@@ -234,17 +217,5 @@ class MembersRepository {
         } catch (PDOException $e) {
             return ['success' => false, 'error' => $e->getMessage()];
         }
-    }
-
-    private function getUserFirstGroup($userId) {
-        $stmt = $this->pdo->prepare(
-            "SELECT g.id FROM groups g
-             JOIN group_members gm ON g.id = gm.group_id
-             WHERE gm.user_id = ?
-             LIMIT 1"
-        );
-        $stmt->execute([$userId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['id'] ?? null;
     }
 }

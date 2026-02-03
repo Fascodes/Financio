@@ -226,32 +226,7 @@ function getCategoryClass(category) {
     return 'category-default';
 }
 
-/**
- * Format date to readable format
- */
-function formatDate(dateStr) {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
-}
-
-/**
- * Format amount with 2 decimal places
- */
-function formatAmount(amount) {
-    return parseFloat(amount).toFixed(2);
-}
-
-/**
- * Escape HTML to prevent XSS
- */
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
+// Funkcje formatDate, formatAmount, escapeHtml są teraz w main.js
 
 /**
  * Render pagination buttons

@@ -264,13 +264,4 @@ function confirmLeaveGroup() {
     });
 }
 
-// Helper functions
-function escapeHtml(text) {
-    var div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function formatCurrency(amount) {
-    return parseFloat(amount).toFixed(2) + ' zł';
-}
+// Funkcje escapeHtml, formatCurrency są teraz w main.js

@@ -1,13 +1,8 @@
 <?php
 
-require_once 'src/utility/DatabaseUtility.php';
+require_once 'src/repositories/BaseRepository.php';
 
-class ReportsRepository {
-    private $pdo;
-
-    public function __construct() {
-        $this->pdo = DatabaseUtility::getConnection();
-    }
+class ReportsRepository extends BaseRepository {
 
     /**
      * Pobierz statystyki podsumowujące
@@ -336,17 +331,5 @@ class ReportsRepository {
         } catch (PDOException $e) {
             return ['labels' => [], 'data' => [], 'colors' => []];
         }
-    }
-
-    private function getUserFirstGroup($userId) {
-        $stmt = $this->pdo->prepare(
-            "SELECT g.id FROM groups g
-             JOIN group_members gm ON g.id = gm.group_id
-             WHERE gm.user_id = ?
-             LIMIT 1"
-        );
-        $stmt->execute([$userId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result['id'] ?? null;
     }
 }

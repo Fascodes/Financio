@@ -56,13 +56,13 @@ function renderSummaryStats(data) {
     
     // Top category
     document.getElementById('topCategoryName').textContent = data.top_category.name;
-    document.getElementById('topCategoryAmount').textContent = '$' + formatNumber(data.top_category.amount) + ' this month';
+    document.getElementById('topCategoryAmount').textContent = '$' + formatReportNumber(data.top_category.amount) + ' this month';
 }
 
 /**
- * Format number with commas
+ * Format number for reports (bez miejsc dziesiętnych)
  */
-function formatNumber(num) {
+function formatReportNumber(num) {
     return parseFloat(num).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 

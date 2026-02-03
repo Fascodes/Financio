@@ -1,14 +1,9 @@
 <?php
 
-require_once 'src/utility/DatabaseUtility.php';
+require_once 'src/repositories/BaseRepository.php';
 require_once 'src/utility/SecurityUtility.php';
 
-class UserRepository {
-    private $pdo;
-
-    public function __construct() {
-        $this->pdo = DatabaseUtility::getConnection();
-    }
+class UserRepository extends BaseRepository {
 
     /**
      * Rejestracja nowego użytkownika

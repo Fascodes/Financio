@@ -16,11 +16,7 @@ class TransactionsController extends AppController {
      * Wyświetl widok transakcji
      */
     public function transactions() {
-        // Sprawdź czy użytkownik jest zalogowany
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            header('Location: /login');
-            exit;
-        }
+        $this->requireLogin();
         include 'public/views/transactions.php';
     }
 
@@ -28,13 +24,9 @@ class TransactionsController extends AppController {
      * API: Pobierz listę transakcji z filtrami i paginacją
      */
     public function getTransactions() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
-        $userId = $_SESSION['user_id'];
+        $userId = $this->getUserId();
 
         // Pobierz parametry z query string
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
@@ -52,85 +44,59 @@ class TransactionsController extends AppController {
         }
 
         $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
-
         $result = $this->repository->getTransactions($userId, $groupId, $filters, $page, $limit);
 
-        header('Content-Type: application/json');
-        echo json_encode($result);
+        $this->jsonResponse($result);
     }
 
     /**
      * API: Pobierz listę kategorii
      */
     public function getCategories() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
         $categories = $this->repository->getCategories();
-
-        header('Content-Type: application/json');
-        echo json_encode(['categories' => $categories]);
+        $this->jsonResponse(['categories' => $categories]);
     }
 
     /**
      * API: Pobierz listę użytkowników w grupie (do filtra)
      */
     public function getGroupUsers() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
-        $userId = $_SESSION['user_id'];
+        $userId = $this->getUserId();
         $groupId = $this->getActiveGroupId($_GET['group_id'] ?? null);
-
         $users = $this->repository->getGroupUsers($userId, $groupId);
 
-        header('Content-Type: application/json');
-        echo json_encode(['users' => $users]);
+        $this->jsonResponse(['users' => $users]);
     }
 
     /**
      * API: Dodaj nową transakcję (POST)
      */
     public function addTransaction() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
+        if (!$this->requireApiAuth()) return;
+
+        if (!$this->isPost()) {
+            $this->jsonResponse(['error' => 'Method not allowed'], 405);
             return;
         }
 
-        // Sprawdź metodę HTTP
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            echo json_encode(['error' => 'Method not allowed']);
-            return;
-        }
-
-        $userId = $_SESSION['user_id'];
-
-        // Pobierz dane z body
-        $input = json_decode(file_get_contents('php://input'), true);
+        $userId = $this->getUserId();
+        $input = $this->getJsonInput();
+        
         if (!$input) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid JSON']);
+            $this->jsonResponse(['error' => 'Invalid JSON'], 400);
             return;
         }
 
         $result = $this->repository->addTransaction($userId, $input);
 
-        header('Content-Type: application/json');
-
         if ($result['success']) {
-            http_response_code(201);
-            echo json_encode(['success' => true, 'id' => $result['id']]);
+            $this->jsonResponse(['success' => true, 'id' => $result['id']], 201);
         } else {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => $result['error']]);
+            $this->jsonResponse(['success' => false, 'error' => $result['error']], 400);
         }
     }
 
@@ -138,30 +104,22 @@ class TransactionsController extends AppController {
      * API: Pobierz pojedynczą transakcję
      */
     public function getTransaction() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
-        $userId = $_SESSION['user_id'];
+        $userId = $this->getUserId();
         $transactionId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
         if (!$transactionId) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Transaction ID required']);
+            $this->jsonResponse(['error' => 'Transaction ID required'], 400);
             return;
         }
 
         $transaction = $this->repository->getTransaction($transactionId, $userId);
 
-        header('Content-Type: application/json');
-
         if ($transaction) {
-            echo json_encode(['success' => true, 'transaction' => $transaction]);
+            $this->jsonResponse(['success' => true, 'transaction' => $transaction]);
         } else {
-            http_response_code(404);
-            echo json_encode(['success' => false, 'error' => 'Transaction not found']);
+            $this->jsonResponse(['success' => false, 'error' => 'Transaction not found'], 404);
         }
     }
 
@@ -169,31 +127,22 @@ class TransactionsController extends AppController {
      * API: Aktualizuj transakcję (PUT)
      */
     public function updateTransaction() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
-        $userId = $_SESSION['user_id'];
-
-        // Pobierz dane z body
-        $input = json_decode(file_get_contents('php://input'), true);
+        $userId = $this->getUserId();
+        $input = $this->getJsonInput();
+        
         if (!$input || empty($input['id'])) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid JSON or missing ID']);
+            $this->jsonResponse(['error' => 'Invalid JSON or missing ID'], 400);
             return;
         }
 
         $result = $this->repository->updateTransaction((int)$input['id'], $userId, $input);
 
-        header('Content-Type: application/json');
-
         if ($result['success']) {
-            echo json_encode(['success' => true]);
+            $this->jsonResponse(['success' => true]);
         } else {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => $result['error']]);
+            $this->jsonResponse(['success' => false, 'error' => $result['error']], 400);
         }
     }
 
@@ -201,33 +150,23 @@ class TransactionsController extends AppController {
      * API: Usuń transakcję (DELETE)
      */
     public function deleteTransaction() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
-        $userId = $_SESSION['user_id'];
-
-        // Pobierz dane z body lub query string
-        $input = json_decode(file_get_contents('php://input'), true);
+        $userId = $this->getUserId();
+        $input = $this->getJsonInput();
         $transactionId = !empty($input['id']) ? (int)$input['id'] : (isset($_GET['id']) ? (int)$_GET['id'] : 0);
 
         if (!$transactionId) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Transaction ID required']);
+            $this->jsonResponse(['error' => 'Transaction ID required'], 400);
             return;
         }
 
         $result = $this->repository->deleteTransaction($transactionId, $userId);
 
-        header('Content-Type: application/json');
-
         if ($result['success']) {
-            echo json_encode(['success' => true]);
+            $this->jsonResponse(['success' => true]);
         } else {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => $result['error']]);
+            $this->jsonResponse(['success' => false, 'error' => $result['error']], 400);
         }
     }
 }

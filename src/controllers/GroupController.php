@@ -15,13 +15,9 @@ class GroupController extends AppController {
      * API: Pobierz grupy użytkownika
      */
     public function getUserGroups() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
-        $userId = $_SESSION['user_id'];
+        $userId = $this->getUserId();
         $groups = $this->repository->getUserGroups($userId);
         $activeGroupId = $_SESSION['active_group_id'] ?? null;
 
@@ -31,8 +27,7 @@ class GroupController extends AppController {
             $_SESSION['active_group_id'] = $activeGroupId;
         }
 
-        header('Content-Type: application/json');
-        echo json_encode([
+        $this->jsonResponse([
             'success' => true,
             'data' => [
                 'groups' => $groups,
@@ -45,18 +40,13 @@ class GroupController extends AppController {
      * API: Zmień aktywną grupę
      */
     public function setActiveGroup() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
-        $userId = $_SESSION['user_id'];
-        $input = json_decode(file_get_contents('php://input'), true);
+        $userId = $this->getUserId();
+        $input = $this->getJsonInput();
 
         if (empty($input['group_id'])) {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Group ID required']);
+            $this->jsonResponse(['success' => false, 'error' => 'Group ID required'], 400);
             return;
         }
 
@@ -64,33 +54,25 @@ class GroupController extends AppController {
 
         // Sprawdź czy użytkownik należy do grupy
         if (!$this->repository->userBelongsToGroup($userId, $groupId)) {
-            http_response_code(403);
-            echo json_encode(['success' => false, 'error' => 'Access denied']);
+            $this->jsonResponse(['success' => false, 'error' => 'Access denied'], 403);
             return;
         }
 
         $_SESSION['active_group_id'] = $groupId;
-
-        header('Content-Type: application/json');
-        echo json_encode(['success' => true, 'active_group_id' => $groupId]);
+        $this->jsonResponse(['success' => true, 'active_group_id' => $groupId]);
     }
 
     /**
      * API: Utwórz nową grupę
      */
     public function createGroup() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
-        $userId = $_SESSION['user_id'];
-        $input = json_decode(file_get_contents('php://input'), true);
+        $userId = $this->getUserId();
+        $input = $this->getJsonInput();
 
         if (empty($input['name'])) {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Group name required']);
+            $this->jsonResponse(['success' => false, 'error' => 'Group name required'], 400);
             return;
         }
 
@@ -101,15 +83,12 @@ class GroupController extends AppController {
             $input['budget'] ?? 0
         );
 
-        header('Content-Type: application/json');
-
         if ($result['success']) {
             // Ustaw nową grupę jako aktywną
             $_SESSION['active_group_id'] = $result['group_id'];
-            echo json_encode(['success' => true, 'group_id' => $result['group_id']]);
+            $this->jsonResponse(['success' => true, 'group_id' => $result['group_id']]);
         } else {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => $result['error']]);
+            $this->jsonResponse(['success' => false, 'error' => $result['error']], 400);
         }
     }
 
@@ -117,25 +96,18 @@ class GroupController extends AppController {
      * API: Opuść grupę
      */
     public function leaveGroup() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
-        $userId = $_SESSION['user_id'];
-        $input = json_decode(file_get_contents('php://input'), true);
+        $userId = $this->getUserId();
+        $input = $this->getJsonInput();
 
         if (empty($input['group_id'])) {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Group ID required']);
+            $this->jsonResponse(['success' => false, 'error' => 'Group ID required'], 400);
             return;
         }
 
         $groupId = (int)$input['group_id'];
         $result = $this->repository->leaveGroup($userId, $groupId);
-
-        header('Content-Type: application/json');
 
         if ($result['success']) {
             // Jeśli opuścił aktywną grupę, ustaw inną
@@ -147,10 +119,9 @@ class GroupController extends AppController {
                     unset($_SESSION['active_group_id']);
                 }
             }
-            echo json_encode(['success' => true]);
+            $this->jsonResponse(['success' => true]);
         } else {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => $result['error']]);
+            $this->jsonResponse(['success' => false, 'error' => $result['error']], 400);
         }
     }
 
@@ -158,18 +129,13 @@ class GroupController extends AppController {
      * API: Dodaj członka do grupy
      */
     public function addMember() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            http_response_code(401);
-            echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-            return;
-        }
+        if (!$this->requireApiAuth()) return;
 
-        $userId = $_SESSION['user_id'];
-        $input = json_decode(file_get_contents('php://input'), true);
+        $userId = $this->getUserId();
+        $input = $this->getJsonInput();
 
         if (empty($input['group_id']) || empty($input['email'])) {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Group ID and email required']);
+            $this->jsonResponse(['success' => false, 'error' => 'Group ID and email required'], 400);
             return;
         }
 
@@ -179,20 +145,16 @@ class GroupController extends AppController {
 
         // Sprawdź czy użytkownik jest właścicielem grupy
         if (!$this->repository->isGroupOwner($userId, $groupId)) {
-            http_response_code(403);
-            echo json_encode(['success' => false, 'error' => 'Only group owners can add members']);
+            $this->jsonResponse(['success' => false, 'error' => 'Only group owners can add members'], 403);
             return;
         }
 
         $result = $this->repository->addMemberByEmail($groupId, $email, $role);
 
-        header('Content-Type: application/json');
-
         if ($result['success']) {
-            echo json_encode(['success' => true]);
+            $this->jsonResponse(['success' => true]);
         } else {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => $result['error']]);
+            $this->jsonResponse(['success' => false, 'error' => $result['error']], 400);
         }
     }
 
@@ -200,10 +162,7 @@ class GroupController extends AppController {
      * Widok zarządzania grupami
      */
     public function groups() {
-        if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-            header('Location: /login');
-            exit;
-        }
+        $this->requireLogin();
         include 'public/views/groups.php';
     }
 }

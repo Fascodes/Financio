@@ -1,13 +1,8 @@
 <?php
 
-require_once 'src/utility/DatabaseUtility.php';
+require_once 'src/repositories/BaseRepository.php';
 
-class GroupRepository {
-    private $pdo;
-
-    public function __construct() {
-        $this->pdo = DatabaseUtility::getConnection();
-    }
+class GroupRepository extends BaseRepository {
 
     /**
      * Pobierz wszystkie grupy użytkownika z dodatkowymi informacjami
@@ -50,17 +45,6 @@ class GroupRepository {
 
         // Zwróć pierwszą grupę
         return $groups[0];
-    }
-
-    /**
-     * Sprawdź czy użytkownik należy do grupy
-     */
-    public function userBelongsToGroup($userId, $groupId) {
-        $stmt = $this->pdo->prepare(
-            "SELECT 1 FROM group_members WHERE user_id = ? AND group_id = ?"
-        );
-        $stmt->execute([$userId, $groupId]);
-        return $stmt->fetch() !== false;
     }
 
     /**
@@ -160,16 +144,5 @@ class GroupRepository {
         } catch (PDOException $e) {
             return ['success' => false, 'error' => $e->getMessage()];
         }
-    }
-
-    /**
-     * Sprawdź czy użytkownik jest właścicielem grupy
-     */
-    public function isGroupOwner($userId, $groupId) {
-        $stmt = $this->pdo->prepare(
-            "SELECT 1 FROM group_members WHERE user_id = ? AND group_id = ? AND role = 'owner'"
-        );
-        $stmt->execute([$userId, $groupId]);
-        return $stmt->fetch() !== false;
     }
 }
