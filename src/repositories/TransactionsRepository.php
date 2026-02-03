@@ -272,7 +272,7 @@ class TransactionsRepository {
             // Aktualizuj transakcję
             $stmt = $this->pdo->prepare(
                 "UPDATE transactions 
-                 SET name = ?, amount = ?, category_id = ?, date = ?, updated_at = NOW()
+                 SET name = ?, amount = ?, category_id = ?, date = ?
                  WHERE id = ?"
             );
             $stmt->execute([

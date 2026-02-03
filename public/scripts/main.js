@@ -10,6 +10,10 @@ function toggleUserMenu() {
     document.getElementById('userMenu').classList.toggle('open');
 }
 
+function closeUserMenu() {
+    document.getElementById('userMenu').classList.remove('open');
+}
+
 // Załaduj dane zalogowanego użytkownika na starcie
 function initializeDashboard() {
     loadCurrentUser();

@@ -10,6 +10,9 @@
         <div class="user-menu" id="userMenu">
             <p class="username">Username</p>
             <p class="email">email@example.com</p>
+            <a href="/groups" class="menu-link" onclick="closeUserMenu()">
+                <span class="menu-icon">📁</span> My Groups
+            </a>
             <button class="logout" onclick="handleLogout()">Logout</button>
         </div>
     </div>

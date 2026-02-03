@@ -337,15 +337,53 @@ function closeAddMemberModal() {
 
 /**
  * Handle add member form submission
- * Note: This is a placeholder - backend endpoint for adding members needs to be implemented
  */
 function handleAddMember(event) {
     event.preventDefault();
     
-    var email = document.getElementById('addMemberEmail').value;
+    var email = document.getElementById('addMemberEmail').value.trim();
     var role = document.getElementById('addMemberRole').value;
     
-    // Placeholder - show message that feature is not yet implemented
-    alert('Add member feature coming soon! Email: ' + email + ', Role: ' + role);
-    closeAddMemberModal();
+    if (!email) {
+        alert('Email is required');
+        return;
+    }
+    
+    // Get active group ID from selector
+    var groupSelector = document.getElementById('groupSelector');
+    var groupId = groupSelector ? parseInt(groupSelector.value) : null;
+    
+    if (!groupId) {
+        alert('No group selected');
+        return;
+    }
+    
+    fetch('/api/groups/add-member', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            group_id: groupId,
+            email: email,
+            role: role
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        if (data.success) {
+            closeAddMemberModal();
+            loadMembers();
+            loadMembersStats();
+            alert('Member added successfully!');
+        } else {
+            alert(data.error || 'Failed to add member');
+        }
+    })
+    .catch(function(error) {
+        console.error('Error adding member:', error);
+        alert('Error adding member');
+    });
 }
