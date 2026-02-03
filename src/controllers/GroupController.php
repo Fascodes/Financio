@@ -2,13 +2,16 @@
 
 require_once 'src/controllers/AppController.php';
 require_once 'src/repositories/GroupRepository.php';
+require_once 'src/repositories/UserPreferencesRepository.php';
 
 class GroupController extends AppController {
 
     private $repository;
+    private $preferencesRepository;
 
     public function __construct() {
         $this->repository = new GroupRepository();
+        $this->preferencesRepository = new UserPreferencesRepository();
     }
 
     /**
@@ -19,13 +22,30 @@ class GroupController extends AppController {
 
         $userId = $this->getUserId();
         $groups = $this->repository->getUserGroups($userId);
+        
+        // Priorytet: sesja > user_preferences > pierwsza grupa
         $activeGroupId = $_SESSION['active_group_id'] ?? null;
-
-        // Jeśli brak aktywnej grupy w sesji, ustaw pierwszą
-        if (!$activeGroupId && !empty($groups)) {
-            $activeGroupId = $groups[0]['id'];
-            $_SESSION['active_group_id'] = $activeGroupId;
+        
+        if (!$activeGroupId) {
+            // Pobierz domyślną grupę z user_preferences (relacja 1:1)
+            $activeGroupId = $this->preferencesRepository->getDefaultGroup($userId);
         }
+
+        // Sprawdź czy grupa nadal istnieje w liście grup użytkownika
+        $groupExists = false;
+        foreach ($groups as $group) {
+            if ($group['id'] == $activeGroupId) {
+                $groupExists = true;
+                break;
+            }
+        }
+
+        // Jeśli grupa nie istnieje lub nie ustawiono, użyj pierwszej
+        if (!$groupExists && !empty($groups)) {
+            $activeGroupId = $groups[0]['id'];
+        }
+
+        $_SESSION['active_group_id'] = $activeGroupId;
 
         $this->jsonResponse([
             'success' => true,
@@ -58,7 +78,12 @@ class GroupController extends AppController {
             return;
         }
 
+        // Zapisz w sesji
         $_SESSION['active_group_id'] = $groupId;
+        
+        // Zapisz jako domyślną grupę w user_preferences (relacja 1:1)
+        $this->preferencesRepository->setDefaultGroup($userId, $groupId);
+        
         $this->jsonResponse(['success' => true, 'active_group_id' => $groupId]);
     }
 
@@ -86,6 +111,8 @@ class GroupController extends AppController {
         if ($result['success']) {
             // Ustaw nową grupę jako aktywną
             $_SESSION['active_group_id'] = $result['group_id'];
+            // Zapisz jako domyślną grupę (relacja 1:1)
+            $this->preferencesRepository->setDefaultGroup($userId, $result['group_id']);
             $this->jsonResponse(['success' => true, 'group_id' => $result['group_id']]);
         } else {
             $this->jsonResponse(['success' => false, 'error' => $result['error']], 400);
@@ -115,6 +142,8 @@ class GroupController extends AppController {
                 $groups = $this->repository->getUserGroups($userId);
                 if (!empty($groups)) {
                     $_SESSION['active_group_id'] = $groups[0]['id'];
+                    // Zaktualizuj domyślną grupę (relacja 1:1)
+                    $this->preferencesRepository->setDefaultGroup($userId, $groups[0]['id']);
                 } else {
                     unset($_SESSION['active_group_id']);
                 }

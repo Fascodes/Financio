@@ -53,6 +53,14 @@ CREATE TABLE transactions (
     archive_date TIMESTAMP NULL
 );
 
+-- Tabela preferencji użytkownika (relacja 1:1 z users)
+CREATE TABLE user_preferences (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    default_group_id INTEGER REFERENCES groups(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Indeksy dla wydajności
 CREATE INDEX idx_transactions_group_date ON transactions(group_id, date DESC) WHERE is_archived = FALSE;
 CREATE INDEX idx_transactions_user ON transactions(user_id);

@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict vaBw6DGHVHXvrH97cLt2hDootQbhLLVSlvVaD6P3LzyA8IJMxDShQOTeWqZFPcQ
+\restrict esy9nMlQNRxcngZLBaf4dnIwzTEdzfaxgNVGq0TJTRZCAPtfmrYbKp1Ze0nlV2G
 
 -- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
 -- Dumped by pg_dump version 18.1 (Debian 18.1-1.pgdg13+2)
@@ -303,6 +303,18 @@ ALTER SEQUENCE public.transactions_id_seq OWNED BY public.transactions.id;
 
 
 --
+-- Name: user_preferences; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_preferences (
+    user_id integer NOT NULL,
+    default_group_id integer,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+--
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -391,8 +403,8 @@ COPY public.group_members (id, group_id, user_id, role, joined_at) FROM stdin;
 --
 
 COPY public.groups (id, name, owner_id, description, budget, created_at, updated_at, is_active) FROM stdin;
-1	Bud┼╝et Domowy	1	Wsp├│lny bud┼╝et rodzinny	5000.00	2026-02-02 19:05:26.533963	2026-02-02 19:05:26.533963	t
 2	Family Budget	2		2000.00	2026-02-02 21:58:32.503719	2026-02-02 21:58:32.503719	t
+1	Budżet Domowy	1	Wsp├│lny bud┼╝et rodzinny	5000.00	2026-02-02 19:05:26.533963	2026-02-02 19:05:26.533963	t
 \.
 
 
@@ -404,27 +416,17 @@ COPY public.transactions (id, group_id, user_id, category_id, name, amount, date
 1	1	1	1	Zakupy Biedronka	185.30	2026-02-02	2026-02-02 19:05:26.541572	f	\N
 2	1	1	3	Lunch w pracy	45.00	2026-02-01	2026-02-02 19:05:26.541572	f	\N
 3	1	1	2	Uber do centrum	32.50	2026-02-01	2026-02-02 19:05:26.541572	f	\N
-4	1	1	1	Pieczywo i nabia┼é	28.90	2026-01-31	2026-02-02 19:05:26.541572	f	\N
 5	1	1	6	Netflix - subskrypcja	49.00	2026-01-30	2026-02-02 19:05:26.541572	f	\N
 6	1	1	1	Zakupy Tesco	150.50	2026-01-28	2026-02-02 19:05:26.541572	f	\N
 7	1	1	2	Benzyna 50L	250.00	2026-01-27	2026-02-02 19:05:26.541572	f	\N
 8	1	1	3	Obiad w restauracji	120.00	2026-01-26	2026-02-02 19:05:26.541572	f	\N
-9	1	1	1	Warzywa ┼Ťwie┼╝e	45.75	2026-01-26	2026-02-02 19:05:26.541572	f	\N
-10	1	1	4	Laptop cz─Ö┼Ť─ç - RAM	299.99	2026-01-25	2026-02-02 19:05:26.541572	f	\N
 11	1	1	3	Kawa w kawiarni	18.50	2026-01-25	2026-02-02 19:05:26.541572	f	\N
 12	1	1	6	Bilet do kina	35.00	2026-01-24	2026-02-02 19:05:26.541572	f	\N
 13	1	1	5	Koszulka adidas	89.99	2026-01-23	2026-02-02 19:05:26.541572	f	\N
-14	1	1	1	Mleko, chleb, mas┼éo	32.40	2026-01-23	2026-02-02 19:05:26.541572	f	\N
 15	1	1	2	Karta parkingowa	80.00	2026-01-22	2026-02-02 19:05:26.541572	f	\N
-16	1	1	7	Leki na przezi─Öbienie	25.00	2026-01-22	2026-02-02 19:05:26.541572	f	\N
-17	1	1	3	Pizza - zam├│wienie	45.99	2026-01-21	2026-02-02 19:05:26.541572	f	\N
 18	1	1	4	Kabel HDMI	29.50	2026-01-21	2026-02-02 19:05:26.541572	f	\N
-19	1	1	6	Ksi─ů┼╝ka - ┼Ücie┼╝ka Wojny	55.00	2026-01-20	2026-02-02 19:05:26.541572	f	\N
-20	1	1	1	Owoce - banany, jab┼éka	28.70	2026-01-20	2026-02-02 19:05:26.541572	f	\N
 21	2	3	5	Nike	480.54	2026-01-30	2026-02-02 23:07:52.668785	f	\N
 22	2	3	1	Biedronka	300.23	2026-02-02	2026-02-02 23:08:11.772428	f	\N
-23	2	3	3	┼╗abka	5.99	2026-02-03	2026-02-03 11:37:04.247475	f	\N
-24	2	3	4	S┼éuchawki	299.99	2026-01-23	2026-02-03 11:37:27.512351	f	\N
 25	2	3	6	Spotify Premium	30.00	2026-02-01	2026-02-03 11:38:51.67463	f	\N
 26	2	3	1	Zakupy Auchan	245.64	2026-01-27	2026-02-03 11:39:37.711431	f	\N
 27	2	3	6	Netflix	60.00	2026-01-15	2026-02-03 11:46:22.32327	f	\N
@@ -439,6 +441,24 @@ COPY public.transactions (id, group_id, user_id, category_id, name, amount, date
 36	2	2	7	Apteka	458.93	2026-02-03	2026-02-03 12:55:07.050363	f	\N
 37	2	4	7	Wizyta u lekarza	500.00	2026-02-03	2026-02-03 14:28:11.688749	f	\N
 38	1	1	9	TEST	1234.00	2025-01-03	2026-02-03 16:43:25.863244	t	2026-02-03 16:43:25.863244
+4	1	1	1	Pieczywo i nabiał	28.90	2026-01-31	2026-02-02 19:05:26.541572	f	\N
+9	1	1	1	Warzywa	45.75	2026-01-26	2026-02-02 19:05:26.541572	f	\N
+10	1	1	4	Laptop	299.99	2026-01-25	2026-02-02 19:05:26.541572	f	\N
+14	1	1	1	Mleko, chleb, masło	32.40	2026-01-23	2026-02-02 19:05:26.541572	f	\N
+16	1	1	7	Leki na przeziębienie	25.00	2026-01-22	2026-02-02 19:05:26.541572	f	\N
+17	1	1	3	Pizza	45.99	2026-01-21	2026-02-02 19:05:26.541572	f	\N
+19	1	1	6	Książka	55.00	2026-01-20	2026-02-02 19:05:26.541572	f	\N
+20	1	1	1	Owoce - banany, jabłka	28.70	2026-01-20	2026-02-02 19:05:26.541572	f	\N
+23	2	3	3	Żabka	5.99	2026-02-03	2026-02-03 11:37:04.247475	f	\N
+24	2	3	4	Słuchawki	299.99	2026-01-23	2026-02-03 11:37:27.512351	f	\N
+\.
+
+
+--
+-- Data for Name: user_preferences; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.user_preferences (user_id, default_group_id, created_at, updated_at) FROM stdin;
 \.
 
 
@@ -536,6 +556,14 @@ ALTER TABLE ONLY public.groups
 
 ALTER TABLE ONLY public.transactions
     ADD CONSTRAINT transactions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_preferences user_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_preferences
+    ADD CONSTRAINT user_preferences_pkey PRIMARY KEY (user_id);
 
 
 --
@@ -653,8 +681,24 @@ ALTER TABLE ONLY public.transactions
 
 
 --
+-- Name: user_preferences user_preferences_default_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_preferences
+    ADD CONSTRAINT user_preferences_default_group_id_fkey FOREIGN KEY (default_group_id) REFERENCES public.groups(id) ON DELETE SET NULL;
+
+
+--
+-- Name: user_preferences user_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_preferences
+    ADD CONSTRAINT user_preferences_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict vaBw6DGHVHXvrH97cLt2hDootQbhLLVSlvVaD6P3LzyA8IJMxDShQOTeWqZFPcQ
+\unrestrict esy9nMlQNRxcngZLBaf4dnIwzTEdzfaxgNVGq0TJTRZCAPtfmrYbKp1Ze0nlV2G
 
